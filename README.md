@@ -1,4 +1,4 @@
-go-playbook
-===========
+ansible-go-cd
+=============
 
-Ansible playbook for Go CI
+Ansible Playbook to install ThoughtWorks Go 

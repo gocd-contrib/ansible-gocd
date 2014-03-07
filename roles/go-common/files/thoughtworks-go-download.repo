@@ -1,0 +1,5 @@
+[thoughtworks-go-download]
+name=Thoughtworks Go Repository
+baseurl=http://download01.thoughtworks.com/go/yum/no-arch
+enabled=1
+gpgcheck=0

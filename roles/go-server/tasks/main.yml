@@ -1,0 +1,9 @@
+---
+- name: install go-server 
+  yum: pkg=go-server-{{ go_version}} state=latest
+  # notify:
+  # - restart go-server
+
+- name: start go-server
+  service: name=go-server state=started
+
