@@ -11,22 +11,38 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.cache.scope = :machine
 	config.cache.auto_detect = true
 
+	# support docker
 	config.vm.provider :docker do |docker, override|
 		override.vm.box = 'dummy'
 		override.vm.box_url = 'http://bit.ly/vagrant-docker-dummy'
 		docker.image = "tlalexan/vagrant-centos:latest"
 	end
 
+	# configure ansible...
+    config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "site.yml"
+        ansible.sudo = true
+        ansible.verbose = 'vvv'
+        ansible.extra_vars = {
+	      gocd: {
+	        agent: {
+	          instances: 2
+	        },
+	        server: {
+	          host: "127.0.0.1",
+	          port: 8153,
+	          autoregister_key: "this-is-insecure"
+	        }
+	      }
+	  	}
+	end
+
+	# machines are defined here...
 	config.vm.define 'go' do |node|
 		node.vm.provider :virtualbox do |v, override|
-			override.vm.network :private_network, ip: "192.168.50.2"
+    		v.customize ["modifyvm", :id, "--memory", "1500"]
+    		override.vm.network :private_network, ip: "192.168.50.2"
 		end
-
-	    node.vm.provision "ansible" do |ansible|
-	        ansible.playbook = "site.yml"
-	        ansible.sudo = true
-	        ansible.verbose = 'vvv'
-	    end
 	end
 
 	
