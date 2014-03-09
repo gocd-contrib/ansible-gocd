@@ -10,7 +10,7 @@
 #       service: name=ntpd state=restarted
 
 ---
-- hosts: go
+- hosts: all
   roles:
      - role: go-server
      - role: go-agent

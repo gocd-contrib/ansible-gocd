@@ -2,7 +2,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-
+  config.vm.hostname = 'go'
   config.vm.box = "vagrant-centos-65-x86_64-minimal"
   config.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-x86_64-minimal.box"
 
@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.host_key_checking = false
         ansible.playbook = "site.yml"
         ansible.sudo = true
-        ansible.verbose = 'vv'
+        ansible.verbose = 'vvv'
         ansible.extra_vars = {
 	      gocd: {
 	        agent: {
@@ -51,12 +51,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 
 	# machines are defined here...
-	config.vm.define 'go' do |node|
-		node.vm.provider :virtualbox do |v, override|
-    		v.customize ["modifyvm", :id, "--memory", "1500"]
-    		override.vm.network :private_network, ip: "192.168.50.2"
-		end
-	end
+
+  config.vm.provider :virtualbox do |v|
+    v.customize ["modifyvm", :id, "--memory", "1500"]
+  end
+  config.vm.network :private_network, ip: "192.168.50.2"
 
 	
 end
