@@ -1,9 +1,4 @@
 ---
-- name: Install agent dependencies
-  yum: name={{item}} state=present
-  with_items:
-   - git
-
 - name: install go-agent 
   yum: pkg=go-agent-{{ go_version}} state=latest
   # notify:
