@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.host_key_checking = false
         ansible.playbook = "site.yml"
         ansible.sudo = true
-        ansible.verbose = 'vvv'
+        ansible.verbose = ''
         ansible.extra_vars = {
 	      gocd: {
 	        agent: {
