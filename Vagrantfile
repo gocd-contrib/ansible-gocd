@@ -5,11 +5,25 @@ Vagrant.require_plugin "vagrant-cachier"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-    config.vm.box = "vagrant-centos-65-x86_64-minimal"
-    config.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-x86_64-minimal.box"
+  config.vm.box = "vagrant-centos-65-x86_64-minimal"
+  config.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-x86_64-minimal.box"
 
-	config.cache.scope = :machine
-	config.cache.auto_detect = true
+  if Vagrant.has_plugin?("vagrant-cachier")
+  	config.cache.scope = :machine
+  	config.cache.auto_detect = true
+      # If you are using VirtualBox, you might want to use that to enable NFS for
+      # shared folders. This is also very useful for vagrant-libvirt if you want
+      # bi-directional sync
+      config.cache.synced_folder_opts = {
+        type: :nfs,
+        # The nolock option can be useful for an NFSv3 client that wants to avoid the
+        # NLM sideband protocol. Without this option, apt-get might hang if it tries
+        # to lock files needed for /var/cache/* operations. All of this can be avoided
+        # by using NFSv4 everywhere. Please note that the tcp option is not the default.
+        mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
+      }
+  end
+  
 
 	# support docker
 	config.vm.provider :docker do |docker, override|
