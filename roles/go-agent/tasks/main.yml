@@ -10,6 +10,9 @@
   
 - name: ensure legacy go-agent service is removed
   file: path=/etc/init.d/go-agent state=absent
+  
+- name: ensure legacy go-agent working directory is removed
+  file: path=/var/lib/go-agent state=absent
 
  
 - debug: msg="{{ ansible_processor_count }} CPUs and {{ ansible_processor_cores }} core detected.  {{ gocd.agent.instances}} agents will be installed."
