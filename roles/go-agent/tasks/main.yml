@@ -5,6 +5,7 @@
   # - restart go-agent
 
 # We don't use the RPM bundle agent service as it's not really designed for running multiple agents concurrently.
+# Once Go source is available we hope to change it's service to be mult-agent by default, and this logic will be removed.
 - name: ensure legacy go-agent service is disabled
   action: command /sbin/chkconfig --del go-agent removes=/etc/init.d/go-agent
   
