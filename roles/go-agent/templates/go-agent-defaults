@@ -1,0 +1,7 @@
+export GO_SERVER={{ gocd.server.host }}
+export GO_SERVER_PORT={{ gocd.server.port }}
+export JAVA_HOME=/usr/lib/jvm/java
+export AGENT_WORK_DIR=/var/lib/go-agent{{item}}
+DAEMON=Y
+VNC=N
+
