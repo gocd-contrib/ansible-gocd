@@ -53,9 +53,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	# machines are defined here...
 
   config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", "1500"]
+    v.customize ["modifyvm", :id, "--memory", "2048"]
   end
   config.vm.network :private_network, ip: "192.168.50.2"
+  config.vm.network "forwarded_port", guest:8153, host: 8153
 
 	
 end
