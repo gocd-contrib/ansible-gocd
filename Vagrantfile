@@ -1,7 +1,5 @@
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+Vagrant.configure("2") do |config|
   config.vm.hostname = 'go'
   config.vm.box = "vagrant-centos-65-x86_64-minimal"
   config.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-x86_64-minimal.box"
@@ -21,7 +19,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       #   mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
       # }
   end
-  
 
 	# support docker
 	config.vm.provider :docker do |docker, override|
