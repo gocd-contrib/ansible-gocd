@@ -11,4 +11,5 @@
 
 ---
 - hosts: all
-  include: tasks/main.yml
+  tasks:
+    include: tasks/main.yml
