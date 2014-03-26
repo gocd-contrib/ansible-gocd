@@ -21,7 +21,7 @@ The default is to install the server and agents onto a single node.  Use the tag
 * When multiple agents are installed each is controlled by it's own service (/etc/init.d/go-agentX). If you wish to uninstall the package, you'll need to manually remove those services as they're not recognized by the RPM/DEB.
 
 ## developing
-Fork away!  Enhancements are always appreciated. :-)
+Fork away!  Pull requests are always appreciated. :-)
 
 You should be able to do a vagrant up and have a running instance of this role.  Take a look inside Vagrantfile and you'll notice we're forcing a role_path on Ansible.  
 
