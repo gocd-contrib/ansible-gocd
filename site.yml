@@ -11,5 +11,5 @@
 
 ---
 - hosts: all
-  tasks:
-    - include: tasks/main.yml
+  roles:
+    - ansible-gocd
