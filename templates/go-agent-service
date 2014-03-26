@@ -52,7 +52,7 @@ start_go_agent() {
 
     if [ "$JAVA_HOME" != "" ]; then
         if [ "${CUR_USER}" == "root" ]; then
-            start_daemon /bin/su - go -c /usr/share/go-agent/agent{{ item }}.sh
+            start_daemon /bin/su go -c /usr/share/go-agent/agent{{ item }}.sh
         else
             start_daemon /usr/share/go-agent/agent{{ item }}.sh
         fi

@@ -1,0 +1,19 @@
+---
+- include: go-common.yml
+- name: install go-server, rh edition
+  yum: pkg=go-server-{{go_version}} state=latest
+  notify:
+  - restart go-server
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: install go-server, deb edition.
+  sudo: yes
+  apt: pkg=go-server={{go_version}} state=present force=yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  notify:
+  - restart go-server
+
+- name: start go-server
+  service: name=go-server state=started
+  notify:
+     - ensure go-server running

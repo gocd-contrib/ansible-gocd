@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
         ansible.host_key_checking = false
         ansible.playbook = "site.yml"
         ansible.sudo = true
-        ansible.verbose = ''
+        ansible.verbose = 'vvvv'
         ansible.extra_vars = {
 	      gocd: {
 	        agent: {
