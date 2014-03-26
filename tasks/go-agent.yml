@@ -26,7 +26,7 @@
   file: path=/var/lib/go-agent state=absent
 
  
-- debug: msg="{{ ansible_processor_count }} CPUs and {{ ansible_processor_cores }} core detected.  {{ gocd.agent.instances}} agents will be installed."
+- debug: msg="{{ ansible_processor_count }} CPUs with {{ ansible_processor_cores }} cores detected.  {{ gocd.agent.instances}} agents will be installed."
 
 - name: Creating additional agents - directory structure.
   file: path="/var/lib/go-agent{{item}}" mode=0755 owner=go group=go state=directory
