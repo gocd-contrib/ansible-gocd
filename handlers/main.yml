@@ -6,4 +6,4 @@
      - ensure go-server running
        
 - name: ensure go-server running
-  wait_for: port=8153 timeout=120 delay=10
+  wait_for: port=8153 timeout=180 delay=10
