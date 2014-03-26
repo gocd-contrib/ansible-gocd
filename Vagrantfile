@@ -1,8 +1,12 @@
 
 Vagrant.configure("2") do |config|
   config.vm.hostname = 'go'
-  config.vm.box = "vagrant-centos-65-x86_64-minimal"
-  config.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-x86_64-minimal.box"
+  config.vm.box = 'opscode-fedora-19'
+  config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_fedora-19_chef-provisionerless.box'
+  # config.vm.box = 'opscode-centos-6.5'
+  # config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box'
+  # config.vm.box = 'opscode-ubuntu-13.10'
+  # config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box'
 
   if Vagrant.has_plugin?("vagrant-cachier")
   	config.cache.scope = :machine
@@ -27,24 +31,31 @@ Vagrant.configure("2") do |config|
 		docker.image = "tlalexan/vagrant-centos:latest"
 	end
 
+  # Support testing roles by themselves.  You can't specify this on command line, but can via environment variable.
+  # This assumes you've checked out into a directory matching the role name (ansible-gocd)
+  ENV['ANSIBLE_ROLES_PATH'] = '..'
+
 	# configure ansible...
     config.vm.provision "ansible" do |ansible|
         ansible.host_key_checking = false
         ansible.playbook = "site.yml"
+        # Set tags to either server or agent as needed.  Default is both.
+        #ansible.tags = "server"
         ansible.sudo = true
-        ansible.verbose = 'vvvv'
-        ansible.extra_vars = {
-	      gocd: {
-	        agent: {
-	          instances: 2
-	        },
-	        server: {
-	          host: "127.0.0.1",
-	          port: 8153,
-	          autoregister_key: "this-is-insecure"
-	        }
-	      }
-	  	}
+        ansible.verbose = 'v'
+        # Use this if you want to override the Role defaults for example to force a specific number of agents.
+      #         ansible.extra_vars = {
+      #         gocd: {
+      #           agent: {
+      #             instances: 2
+      #           },
+      #           server: {
+      #             host: "127.0.0.1",
+      #             port: 8153,
+      #             autoregister_key: "this-is-insecure"
+      #           }
+      #         }
+      # }
 	end
 
 	# machines are defined here...
@@ -52,7 +63,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", "2048"]
   end
-  config.vm.network :private_network, ip: "192.168.50.2"
+  # config.vm.network :private_network, ip: "192.168.50.2"
   config.vm.network "forwarded_port", guest:8153, host: 8153
 
 	
