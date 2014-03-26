@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  author: Tim Brown
-  description: Install the Go Continuous Delivery tool.  Model even the most complex build & deploy workflow with ease.
-  company: ThoughtWorks, Inc.
+  author: "Tim Brown"
+  description: "Install the Go Continuous Delivery tool.  Model even the most complex build & deploy workflow with ease."
+  company: "ThoughtWorks, Inc."
   # Some suggested licenses:
   # - BSD (default)
   # - MIT
