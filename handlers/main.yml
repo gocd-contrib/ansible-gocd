@@ -1,5 +1,6 @@
 ---
 - name: restart go-server 
+  sudo: yes
   service: name=go-server state=restarted
   notify:
      - ensure go-server running

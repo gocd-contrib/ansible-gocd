@@ -11,6 +11,4 @@
 
 ---
 - hosts: all
-  roles:
-     - role: go-server
-     - role: go-agent
+  include: tasks/main.yml

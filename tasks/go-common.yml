@@ -1,0 +1,30 @@
+---
+- name: Install Java 1.7 and some basic dependencies, RH edition
+  yum: name={{item}} state=present
+  with_items:
+   - unzip
+   - which
+   - java-1.7.0-openjdk-devel
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Install Java 1.7 and some basic dependencies, deb edition. Must be installed before repo.
+  sudo: yes
+  apt: name={{item}} state=present
+  with_items:
+   - python-pycurl
+   - unzip
+   - openjdk-7-jdk
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: thoughtworks go repository, rh edition
+  copy: src=thoughtworks-go-download.repo
+        dest=/etc/yum.repos.d/
+        owner=root group=root mode=0644
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: thoughtworks go repository, deb edition
+  sudo: yes
+  apt_repository: repo='deb http://download01.thoughtworks.com/go/debian/ contrib/' state=present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+

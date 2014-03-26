@@ -1,0 +1,9 @@
+go_version: 13.4.1-18342 
+java_home: /usr/lib/jvm/java
+gocd:
+  agent:
+    instances: 1
+  server:
+    host: localhost
+    port: 8153
+
