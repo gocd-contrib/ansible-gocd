@@ -1,12 +1,12 @@
 ---
 - include: go-common.yml
-- name: install go-server, rh edition
-  yum: pkg=go-server-{{go_version}} state=latest
+- name: yum install go-server
+  yum: pkg=go-server-{{go_version}} state=present
   notify:
   - restart go-server
   when: ansible_pkg_mgr=='yum'
 
-- name: install go-server, deb edition.
+- name: apt install go-server
   sudo: yes
   apt: pkg=go-server={{go_version}} state=present force=yes
   when: ansible_pkg_mgr=='apt'

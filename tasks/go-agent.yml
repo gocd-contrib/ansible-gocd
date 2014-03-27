@@ -1,10 +1,10 @@
 ---
 - include: go-common.yml
-- name: install go-agent, rh edition
+- name: yum install go-agent
   yum: pkg=go-agent-{{ go_version}} state=installed
   when: ansible_pkg_mgr=='yum'
 
-- name: install go-agent, deb edition
+- name: apt install go-agent
   sudo: yes
   apt: pkg=go-agent={{ go_version}} state=present force=yes
   when: ansible_pkg_mgr=='apt'
@@ -24,7 +24,6 @@
 - name: ensure legacy go-agent working directory is removed
   sudo: yes
   file: path=/var/lib/go-agent state=absent
-
  
 - debug: msg="{{ ansible_processor_count }} CPUs with {{ ansible_processor_cores }} cores detected.  {{ gocd.agent.instances}} agents will be installed."
 
