@@ -22,6 +22,14 @@
    - openjdk-7-jdk
   when: ansible_pkg_mgr == 'apt'
 
+- name: determine JAVA_HOME
+  shell: readlink -f /usr/bin/java | sed "s:bin/java::"
+  register: gocd_JAVA_HOME
+
+- name: set JAVA_HOME
+  set_fact: 
+     java_home: "{{ gocd_JAVA_HOME.stdout }}"
+
 - name: thoughtworks go yum repository
   sudo: yes
   copy: src=thoughtworks-go-download.repo

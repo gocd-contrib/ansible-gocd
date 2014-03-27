@@ -1,5 +1,4 @@
 ---
-- include: go-common.yml
 - name: yum install go-agent
   sudo: yes
   yum: pkg=go-agent-{{ go_version}} state=installed
