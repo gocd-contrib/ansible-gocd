@@ -5,6 +5,7 @@
    
    
 - name: yum install Java 1.7 and some basic dependencies
+  sudo: yes
   yum: name={{item}} state=present
   with_items:
    - unzip
@@ -22,6 +23,7 @@
   when: ansible_pkg_mgr == 'apt'
 
 - name: thoughtworks go yum repository
+  sudo: yes
   copy: src=thoughtworks-go-download.repo
         dest=/etc/yum.repos.d/
         owner=root group=root mode=0644

@@ -1,6 +1,7 @@
 ---
 - include: go-common.yml
 - name: yum install go-server
+  sudo: yes
   yum: pkg=go-server-{{go_version}} state=present
   notify:
   - restart go-server
@@ -14,13 +15,16 @@
   - restart go-server
 
 - name: start go-server
+  sudo: yes
   service: name=go-server state=started
   notify:
      - ensure go-server running
 
 # These won't work if you don't have firewalld, but they won't error out either
 - name: enable Go HTTP traffic through firewalld
+  sudo: yes
   firewalld: port=8153 permanent=true state=enabled
 
 - name: enable Go HTTPS traffic through firewalld
+  sudo: yes
   firewalld: port=8154/tcp permanent=true state=enabled

@@ -1,6 +1,7 @@
 ---
 - include: go-common.yml
 - name: yum install go-agent
+  sudo: yes
   yum: pkg=go-agent-{{ go_version}} state=installed
   when: ansible_pkg_mgr=='yum'
 
@@ -14,6 +15,7 @@
 # We don't use the RPM/DEB bundle agent service as it's not really designed for running multiple agents concurrently.
 # Once Go source is available we hope to change it's service to be mult-agent by default, and this logic will be removed.
 - name: ensure legacy go-agent service is disabled
+  sudo: yes
   action: command /sbin/chkconfig --del go-agent removes=/etc/init.d/go-agent
   when: ansible_pkg_mgr=='yum'
   
