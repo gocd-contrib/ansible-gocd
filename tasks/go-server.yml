@@ -17,3 +17,10 @@
   service: name=go-server state=started
   notify:
      - ensure go-server running
+
+# These won't work if you don't have firewalld, but they won't error out either
+- name: enable Go HTTP traffic through firewalld
+  firewalld: port=8153 permanent=true state=enabled
+
+- name: enable Go HTTPS traffic through firewalld
+  firewalld: port=8154/tcp permanent=true state=enabled
