@@ -6,7 +6,7 @@
    
 - name: yum install Java 1.7 and some basic dependencies
   sudo: yes
-  yum: name={{item}} state=present
+  yum: name={{ item }} state=present
   with_items:
    - unzip
    - which
@@ -15,7 +15,7 @@
 
 - name: apt install Java 1.7 and some basic dependencies. Must be installed before repo.
   sudo: yes
-  apt: name={{item}} state=present update_cache=true
+  apt: name={{ item }} state=present update_cache=true
   with_items:
    - python-pycurl
    - unzip
@@ -24,11 +24,11 @@
 
 - name: determine JAVA_HOME
   shell: readlink -f /usr/bin/java | sed "s:bin/java::"
-  register: gocd_JAVA_HOME
+  register: system_java_home
 
-- name: set JAVA_HOME
+- name: set GOCD_JAVA_HOME
   set_fact: 
-     java_home: "{{ gocd_JAVA_HOME.stdout }}"
+     GOCD_JAVA_HOME: "{{ system_java_home.stdout }}"
 
 - name: thoughtworks go yum repository
   sudo: yes

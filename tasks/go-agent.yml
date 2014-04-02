@@ -1,12 +1,12 @@
 ---
 - name: yum install go-agent
   sudo: yes
-  yum: pkg=go-agent-{{ go_version}} state=installed
+  yum: pkg=go-agent-{{ GOCD_GO_VERSION }} state=installed
   when: ansible_pkg_mgr=='yum'
 
 - name: apt install go-agent
   sudo: yes
-  apt: pkg=go-agent={{ go_version}} state=present force=yes
+  apt: pkg=go-agent={{ GOCD_GO_VERSION }} state=present force=yes
   when: ansible_pkg_mgr=='apt'
   # notify:
   # - restart go-agent
@@ -26,33 +26,33 @@
   sudo: yes
   file: path=/var/lib/go-agent state=absent
  
-- debug: msg="{{ ansible_processor_count }} CPUs with {{ ansible_processor_cores }} cores detected.  {{ gocd.agent.instances}} agents will be installed."
+- debug: msg="{{ ansible_processor_count }} CPUs with {{ ansible_processor_cores }} cores detected.  {{ GOCD_AGENT_INSTANCES }} agents will be installed."
 
 - name: Creating additional agents - directory structure.
   file: path="/var/lib/go-agent{{item}}" mode=0755 owner=go group=go state=directory
   sudo: yes
-  with_sequence: "count={{ gocd.agent.instances}}"
+  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
   
 - file: path="/var/lib/go-agent{{item}}/config" mode=0755 owner=go group=go state=directory
   sudo: yes
-  with_sequence: "count={{ gocd.agent.instances}}"
+  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
  
 - name: Creating additional agents - defaults.
   template: "src=go-agent-defaults dest=/etc/default/go-agent{{ item }} mode=0644 owner=root group=root"
   sudo: yes
-  with_sequence: "count={{ gocd.agent.instances}}"
+  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
 
 - name: Creating additional agents - service.
   template: "src=go-agent-service dest=/etc/init.d/go-agent{{ item }} mode=0755 owner=root group=root"
   sudo: yes
-  with_sequence: "count={{ gocd.agent.instances}}"
+  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
 
 - name: Creating additional agents - bash script.
   template: "src=go-agent-sh dest=/usr/share/go-agent/agent{{ item }}.sh mode=0755 owner=root group=root"
   sudo: yes
-  with_sequence: "count={{ gocd.agent.instances}}"
+  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
   
 - name: Ensure Go-agents are started and run on startup.
-  service: "name=go-agent{{item}} state=started enabled=yes"
+  service: "name=go-agent{{ item }} state=started enabled=yes"
   sudo: yes
-  with_sequence: "count={{ gocd.agent.instances}}"
+  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"

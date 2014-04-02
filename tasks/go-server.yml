@@ -1,14 +1,14 @@
 ---
 - name: yum install go-server
   sudo: yes
-  yum: pkg=go-server-{{go_version}} state=present
+  yum: pkg=go-server-{{ GOCD_GO_VERSION }} state=present
   notify:
   - restart go-server
   when: ansible_pkg_mgr=='yum'
 
 - name: apt install go-server
   sudo: yes
-  apt: pkg=go-server={{go_version}} state=present force=yes
+  apt: pkg=go-server={{ GOCD_GO_VERSION }} state=present force=yes
   when: ansible_pkg_mgr=='apt'
   notify:
   - restart go-server

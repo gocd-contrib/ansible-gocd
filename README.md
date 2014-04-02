@@ -17,7 +17,7 @@ The default is to install the server and agents onto a single node.  Use the tag
 * The server listens on port 8153 by default.  
   
 ### Agents
-* By default one agent will be installed per CPU core available.  You can override this by setting gocd.agent.instances to a specific value.
+* By default one agent will be installed per CPU core available.  You can override this by setting GOCD_AGENT_INSTANCES to a specific value.
 * When multiple agents are installed each is controlled by it's own service (/etc/init.d/go-agentX). If you wish to uninstall the package, you'll need to manually remove those services as they're not recognized by the RPM/DEB.
 
 ## developing
