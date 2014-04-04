@@ -40,21 +40,12 @@ Vagrant.configure("2") do |config|
         ansible.host_key_checking = false
         ansible.playbook = "site.yml"
         # Set tags to either server or agent as needed.  Default is both.
-        #ansible.tags = "server"
+        # ansible.tags = "server"
         ansible.sudo = true
-        ansible.verbose = 'v'
+        ansible.verbose = ''
         # Use this if you want to override the Role defaults for example to force a specific number of agents.
-      #         ansible.extra_vars = {
-      #         gocd: {
-      #           agent: {
-      #             instances: 2
-      #           },
-      #           server: {
-      #             host: "127.0.0.1",
-      #             port: 8153,
-      #             autoregister_key: "this-is-insecure"
-      #           }
-      #         }
+      #   ansible.extra_vars = {
+      #     GOCD_AGENT_INSTANCES: 2
       # }
 	end
 
