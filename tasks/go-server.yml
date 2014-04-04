@@ -19,11 +19,32 @@
   notify:
      - ensure go-server running
 
-# These won't work if you don't have firewalld, but they won't error out either
+- name: check if firewalld is available
+  command: which firewalld
+  ignore_errors: true
+  register: firewalld
+
 - name: enable Go HTTP traffic through firewalld
   sudo: yes
   firewalld: port=8153/tcp permanent=true state=enabled
+  when: firewalld|success
 
 - name: enable Go HTTPS traffic through firewalld
   sudo: yes
   firewalld: port=8154/tcp permanent=true state=enabled
+  when: firewalld|success
+
+- name: check if UFW is available
+  command: which ufw
+  ignore_errors: true
+  register: ufw
+
+- name: enable Go HTTP traffic through UFW
+  sudo: yes 
+  ufw: rule=allow port=8153 proto=tcp
+  when: ufw|success
+ 
+- name: enable Go HTTPS traffic through UFW
+  sudo: yes
+  ufw: rule=allow port=8153 proto=tcp
+  when: ufw|success
