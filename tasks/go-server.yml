@@ -39,12 +39,12 @@
   ignore_errors: true
   register: ufw
 
-- name: enable Go HTTP traffic through UFW
+- name: enable Go HTTP traffic through ufw
   sudo: yes 
   ufw: rule=allow port=8153 proto=tcp
   when: ufw|success
  
-- name: enable Go HTTPS traffic through UFW
+- name: enable Go HTTPS traffic through ufw
   sudo: yes
-  ufw: rule=allow port=8153 proto=tcp
+  ufw: rule=allow port=8154 proto=tcp
   when: ufw|success
