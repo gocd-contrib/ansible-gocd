@@ -4,7 +4,7 @@ galaxy_info:
   description: "Install the Go Continuous Delivery tool.  Model even the most complex build and deploy workflow with ease."
   company: "ThoughtWorks, Inc."
   license: MIT
-  min_ansible_version: 1.5
+  min_ansible_version: 1.6
   platforms:
     - name: EL
       versions:
