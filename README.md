@@ -10,7 +10,7 @@ Product details are available at http://www.go.cd .  Source will soon be at http
 requirements
 ============
 * Ansible 1.6+ is required for UFW firewall module support.  
-* Ansible 1.5 can be used if comment out the UFW tasks.
+* Ansible 1.5 can be used if you comment out the UFW tasks.
 
 installation instructions
 =========================
