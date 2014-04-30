@@ -7,6 +7,11 @@ Model even the most complex build & deploy workflow with ease. Unlike CI servers
 
 Product details are available at http://www.go.cd .  Source will soon be at https://github.com/GoCD/GoCD
 
+requirements
+============
+* Ansible 1.6+ is required for UFW firewall module support.  
+* Ansible 1.5 can be used if comment out the UFW tasks.
+
 installation instructions
 =========================
 
