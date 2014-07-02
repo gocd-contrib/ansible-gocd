@@ -19,23 +19,30 @@
   notify:
      - ensure go-server running
 
-- name: check if firewalld is available
+- name: check if firewalld is installed
   sudo: yes
   command: which firewalld
   ignore_errors: true
   register: firewalld
-
+  
+- name: check if firewalld service is running
+  command: firewall-cmd --state
+  sudo: yes
+  when: firewalld|success
+  register: firewalld_svc
+  ignore_errors: true
+  
 - name: enable Go HTTP traffic through firewalld
   sudo: yes
   firewalld: port=8153/tcp permanent=true state=enabled
-  when: firewalld|success
+  when: firewalld|success and firewalld_svc.stdout=='running'
   notify:
     - restart firewalld
 
 - name: enable Go HTTPS traffic through firewalld
   sudo: yes
   firewalld: port=8154/tcp permanent=true state=enabled
-  when: firewalld|success
+  when: firewalld|success and firewalld_svc.stdout=='running'
   notify:
     - restart firewalld
 
