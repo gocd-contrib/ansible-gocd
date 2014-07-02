@@ -20,6 +20,7 @@
      - ensure go-server running
 
 - name: check if firewalld is available
+  sudo: yes
   command: which firewalld
   ignore_errors: true
   register: firewalld
@@ -28,11 +29,15 @@
   sudo: yes
   firewalld: port=8153/tcp permanent=true state=enabled
   when: firewalld|success
+  notify:
+    - restart firewalld
 
 - name: enable Go HTTPS traffic through firewalld
   sudo: yes
   firewalld: port=8154/tcp permanent=true state=enabled
   when: firewalld|success
+  notify:
+    - restart firewalld
 
 - name: check if UFW is available
   command: which ufw
