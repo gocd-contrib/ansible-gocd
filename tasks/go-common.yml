@@ -42,4 +42,26 @@
   apt_repository: repo='deb http://download01.thoughtworks.com/go/debian/ contrib/' state=present
   when: ansible_pkg_mgr == 'apt'
 
+- name: add go group
+  sudo: yes
+  group: gid={{ GOCD_GROUPID }} name={{ GOCD_GROUP }} state=present
 
+- name: add go user with home at /var/go
+  sudo: yes
+  user: name={{ GOCD_USER }} comment="Go CD User" uid={{ GOCD_USERID }} group={{ GOCD_GROUP }} home=/var/go
+
+- name: create log directory
+  sudo: yes
+  file: path=/var/log/go-server state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
+
+- name: create run directory
+  sudo: yes
+  file: path=/var/run/go-server state=directory 
+
+- name: create var/libgo-server directory
+  sudo: yes
+  file: path=/var/lib/go-server state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
+
+- name: create etc/go directory
+  sudo: yes
+  file: path=/etc/go state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
