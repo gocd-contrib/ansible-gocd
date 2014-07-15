@@ -42,7 +42,7 @@ Vagrant.configure("2") do |config|
         ansible.host_key_checking = false
         ansible.playbook = "site.yml"
         # Set tags to either server or agent as needed.  Default is both.
-        # ansible.tags = "server"
+        #ansible.tags = "server,agent"
         ansible.sudo = true
         ansible.verbose = ''
         # Use this if you want to override the Role defaults for example to force a specific number of agents.
