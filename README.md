@@ -5,7 +5,7 @@ Ansible Playbook to install Go.
 
 Model even the most complex build & deploy workflow with ease. Unlike CI servers, Go was built from the ground up with pipelines in mind. Go makes it simple to model failing fast, artifact promotion, self-service environments and single-click deployment.
 
-Product details are available at http://www.go.cd .  Source will soon be at https://github.com/GoCD/GoCD
+Product details are available at http://www.go.cd .  Source available at https://github.com/GoCD/GoCD
 
 requirements
 ============
@@ -30,4 +30,4 @@ Fork away!  Pull requests are always appreciated. :-)
 
 You should be able to do a vagrant up and have a running instance of this role.  Take a look inside Vagrantfile and you'll notice we're forcing a role_path on Ansible.  
 
-It's been tested on Vagrant 1.5.x with VirtualBox primarily, with a little attention paid to Docker on Linux via the docker-provider plugin.   
+It's been tested on Vagrant 1.5.1 thru 1.6.3 with VirtualBox primarily, with a little attention paid to Docker on Linux via the docker-provider plugin.
