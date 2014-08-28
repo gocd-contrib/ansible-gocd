@@ -39,7 +39,7 @@
 
 - name: thoughtworks go apt repository
   sudo: yes
-  apt_repository: repo='deb http://download01.thoughtworks.com/go/debian/ contrib/' state=present
+  apt_repository: repo='deb http://download.go.cd/gocd-deb/ /' state=present
   when: ansible_pkg_mgr == 'apt'
 
 - name: add go group
