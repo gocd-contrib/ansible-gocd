@@ -24,14 +24,14 @@
   command: which firewalld
   ignore_errors: true
   register: firewalld
-  
+
 - name: check if firewalld service is running
   command: firewall-cmd --state
   sudo: yes
   when: firewalld|success
   register: firewalld_svc
   ignore_errors: true
-  
+
 - name: enable Go HTTP traffic through firewalld
   sudo: yes
   firewalld: port=8153/tcp permanent=true state=enabled
@@ -52,10 +52,10 @@
   register: ufw
 
 - name: enable Go HTTP traffic through ufw
-  sudo: yes 
+  sudo: yes
   ufw: rule=allow port=8153 proto=tcp
   when: ufw|success
- 
+
 - name: enable Go HTTPS traffic through ufw
   sudo: yes
   ufw: rule=allow port=8154 proto=tcp

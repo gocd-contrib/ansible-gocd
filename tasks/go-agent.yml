@@ -17,26 +17,26 @@
   sudo: yes
   action: command /sbin/chkconfig --del go-agent removes=/etc/init.d/go-agent
   when: ansible_pkg_mgr=='yum'
-  
+
 - name: ensure legacy go-agent service is removed
   sudo: yes
   file: path=/etc/init.d/go-agent state=absent
-  
+
 - name: ensure legacy go-agent working directory is removed
   sudo: yes
   file: path=/var/lib/go-agent state=absent
- 
+
 - debug: msg="{{ ansible_processor_count }} CPUs with {{ ansible_processor_cores }} cores detected.  {{ GOCD_AGENT_INSTANCES }} agents will be installed."
 
 - name: Creating additional agents - directory structure.
   file: path="/var/lib/go-agent{{item}}" mode=0755 owner=go group=go state=directory
   sudo: yes
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
-  
+
 - file: path="/var/lib/go-agent{{item}}/config" mode=0755 owner=go group=go state=directory
   sudo: yes
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
- 
+
 - name: Creating additional agents - defaults.
   template: "src=go-agent-defaults dest=/etc/default/go-agent{{ item }} mode=0644 owner=root group=root"
   sudo: yes
@@ -51,7 +51,7 @@
   template: "src=go-agent-sh dest=/usr/share/go-agent/agent{{ item }}.sh mode=0755 owner=root group=root"
   sudo: yes
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
-  
+
 - name: Ensure Go-agents are started and run on startup.
   service: "name=go-agent{{ item }} state=started enabled=yes"
   sudo: yes
