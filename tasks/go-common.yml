@@ -1,9 +1,8 @@
 ---
 - name: 'Fail if not using Apt or Yum.  Do a manual install for now :-('
   fail: msg='This role only supports Yum or Apt package managers at the moment.  Please do a manual install instead.'
-  when: ansible_pkg_mgr != 'yum' and ansible_pkg_mgr != 'apt'
-   
-   
+  when: ansible_pkg_mgr != 'yum' and ansible_pkg_mgr != 'apt'   
+
 - name: yum install Java 1.7 and some basic dependencies
   sudo: yes
   yum: name={{ item }} state=present

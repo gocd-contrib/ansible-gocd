@@ -1,16 +1,16 @@
 ---
-- name: restart go-server 
+- name: restart go-server
   sudo: yes
   file: path=/etc/go/log4j.properties owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
   notify:
     - really restart go-server
 
-- name: really restart go-server 
+- name: really restart go-server
   sudo: yes
   service: name=go-server state=restarted
   notify:
      - ensure go-server running
-       
+
 - name: ensure go-server running
   wait_for: port=8153 timeout=180 delay=10
 
