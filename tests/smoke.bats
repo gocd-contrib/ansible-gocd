@@ -1,6 +1,8 @@
 #!/usr/bin/env bats
+[[ "$OSTYPE" = darwin* ]] && CPU_CORES=`sysctl hw.ncpu | awk '{print $2}'`
+[[ "$OSTYPE" = linux* ]] && CPU_CORES=`nproc`
 [ -z $MAX_WAIT ] && MAX_WAIT=5
-[ -z $GO_AGENT_INSTANCES ] && GO_AGENT_INSTANCES=1
+[ -z $GOCD_AGENT_INSTANCES ] && GOCD_AGENT_INSTANCES=${CPU_CORES}
 [ -z $GO_VERSION ] && GO_VERSION=14.2.0
 
 assert_success()
@@ -34,8 +36,8 @@ assert_failure()
    assert_success
 }
 
-@test "${GO_AGENT_INSTANCES} agents exist" {
+@test "${GOCD_AGENT_INSTANCES} agents exist" {
    run bash -c "grep 'agent hostname=' config.xml | wc -l | sed 's/ //g'"
    assert_success
-   [ "$output" -eq "${GO_AGENT_INSTANCES}" ]
+   [ "$output" -eq "${GOCD_AGENT_INSTANCES}" ]
 }
