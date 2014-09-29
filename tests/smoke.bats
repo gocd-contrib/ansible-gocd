@@ -2,7 +2,7 @@
 [[ "$OSTYPE" = darwin* ]] && CPU_CORES=`sysctl hw.ncpu | awk '{print $2}'`
 [[ "$OSTYPE" = linux* ]] && CPU_CORES=`nproc`
 [ -z $MAX_WAIT ] && MAX_WAIT=5
-[ -z $GOCD_AGENT_INSTANCES ] && GOCD_AGENT_INSTANCES=${CPU_CORES}
+[ -z $GOCD_AGENT_INSTANCES ] && GOCD_AGENT_INSTANCES=${CPU_CORES-1}
 [ -z $GO_VERSION ] && GO_VERSION=14.2.0
 
 assert_success()
