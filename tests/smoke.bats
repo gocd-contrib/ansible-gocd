@@ -32,7 +32,7 @@ assert_failure()
 }
 
 @test "Can retrieve the config" {
-   run curl --connect-timeout $MAX_WAIT --fail -qiSL --silent http://localhost:8153/go/api/admin/config.xml -o config.xml
+   run curl --connect-timeout $MAX_WAIT --fail -qSL --silent http://localhost:8153/go/api/admin/config.xml -o config.xml
    assert_success
 }
 
