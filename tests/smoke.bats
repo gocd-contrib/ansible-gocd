@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 [ -z $MAX_WAIT ] && MAX_WAIT=5
-[ -z $GO_AGENT_COUNT ] && GO_AGENT_COUNT=1
+[ -z $GO_AGENT_INSTANCES ] && GO_AGENT_INSTANCES=1
 [ -z $GO_VERSION ] && GO_VERSION=14.2.0
 
 assert_success()
@@ -34,8 +34,8 @@ assert_failure()
    assert_success
 }
 
-@test "${GO_AGENT_COUNT} agents exist" {
+@test "${GO_AGENT_INSTANCES} agents exist" {
    run bash -c "grep 'agent hostname=' config.xml | wc -l | sed 's/ //g'"
    assert_success
-   [ "$output" -eq "${GO_AGENT_COUNT}" ]
+   [ "$output" -eq "${GO_AGENT_INSTANCES}" ]
 }
