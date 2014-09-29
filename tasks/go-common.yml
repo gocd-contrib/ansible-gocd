@@ -41,6 +41,7 @@
   apt_repository: repo='deb http://download.go.cd/gocd-deb/ /' state=present
   when: ansible_pkg_mgr == 'apt'
 
+# Note: If the user or group exists, but under another ID, Ansible will try and change it.
 - name: add go group
   sudo: yes
   group: gid={{ GOCD_GROUPID }} name={{ GOCD_GROUP }} state=present
