@@ -29,6 +29,10 @@ This repository is organized as a single Role. That means it can be included, sy
 The default is to install the server and agents onto a single node.  Use the tags of 'server' or 'agent' to selectively install one or the other.
 ### Server
 * The server listens on port 8153 by default.  
+* Optionally install Git, Subversion, or Mercurial **on all agent & server nodes** by setting any of the following to true.  Default is false.
+   * GOCD_SCM_GIT 
+   * GOCD_SCM_SVN 
+   * GOCD_SCM_MERCURIAL 
   
 ### Agents
 * By default one agent will be installed per CPU core available.  You can override this by setting GOCD_AGENT_INSTANCES to a specific value.

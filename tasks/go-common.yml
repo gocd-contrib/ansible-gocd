@@ -66,3 +66,35 @@
 - name: create etc/go directory
   sudo: yes
   file: path=/etc/go state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
+
+# Optional dependencies, for both checking for changes & checking out code.  Install on both agent & server.
+- name: yum install git
+  sudo: yes
+  yum: pkg=git state=installed
+  when: ansible_pkg_mgr=='yum' and GOCD_SCM_GIT
+
+- name: apt install git
+  sudo: yes
+  apt: pkg=git state=present
+  when: ansible_pkg_mgr=='apt' and GOCD_SCM_GIT
+
+- name: yum install mercurial
+  sudo: yes
+  yum: pkg=mercurial state=installed
+  when: ansible_pkg_mgr=='yum' and GOCD_SCM_MERCURIAL
+
+- name: apt install mercurial
+  sudo: yes
+  apt: pkg=mercurial state=present
+  when: ansible_pkg_mgr=='apt' and GOCD_SCM_MERCURIAL
+
+- name: yum install subversion
+  sudo: yes
+  yum: pkg=subversion state=installed
+  when: ansible_pkg_mgr=='yum' and GOCD_SCM_SVN
+
+- name: apt install subversion
+  sudo: yes
+  apt: pkg=subversion state=present
+  when: ansible_pkg_mgr=='apt' and GOCD_SCM_SVN
+

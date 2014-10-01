@@ -8,3 +8,9 @@ GOCD_USER: go
 GOCD_USERID: 5000
 GOCD_GROUP: go
 GOCD_GROUPID: 5000
+
+# Basic SCM dependencies
+GOCD_SCM_GIT: false
+GOCD_SCM_MERCURIAL: false
+GOCD_SCM_SVN: false
+
