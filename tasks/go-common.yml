@@ -24,6 +24,7 @@
 - name: determine JAVA_HOME
   shell: readlink -f /usr/bin/java | sed "s:bin/java::"
   register: system_java_home
+  changed_when: false
 
 - name: set GOCD_JAVA_HOME
   set_fact:

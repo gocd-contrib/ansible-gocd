@@ -24,6 +24,7 @@
   command: which firewalld
   ignore_errors: true
   register: firewalld
+  changed_when: false
 
 - name: check if firewalld service is running
   command: firewall-cmd --state
@@ -50,6 +51,7 @@
   command: which ufw
   ignore_errors: true
   register: ufw
+  changed_when: false
 
 - name: enable Go HTTP traffic through ufw
   sudo: yes
