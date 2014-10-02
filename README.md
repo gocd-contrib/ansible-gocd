@@ -37,7 +37,7 @@ The default is to install the server and agents onto a single node.  Use the tag
 #### Optional Configuration Items
 **This capability is basic now, but the goal is to support full configuration of Go via source control with no dependency on the UI.  Hopefully this will include the ability to use individual pipeline configuration files that are included in the resulting Go configuration file.**
 
-** THIS IS A WORK IN PROGRESS: PLEASE MONITOR YOUR GO LOGS TO DETECT INVALID CHANGES **.  Sorry.
+**THIS IS A WORK IN PROGRESS: PLEASE MONITOR YOUR GO LOGS TO DETECT INVALID CHANGES**.  Sorry.
 
 This role can manage the base Go configuration, without losing agent or pipeline definitions.  
 * Enable configuration by setting GOCD_CONFIGURE to true
