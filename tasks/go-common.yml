@@ -66,12 +66,12 @@
 - name: create etc/go directory
   sudo: yes
   file: path=/etc/go state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
- 
+
 - name: determine latest version of Go available in repo
   shell: "{{ ansible_pkg_mgr }} list go-server |grep go-server |awk '{print $2}'"
   register: tmp_go_version
   changed_when: false
-  when: GOCD_GO_VERSION == 'latest' 
+  when: GOCD_GO_VERSION == 'latest'
 
 - name: Set GOCD_GO_VERSION to latest
   set_fact:
