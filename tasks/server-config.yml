@@ -1,7 +1,7 @@
 # All tasks below have an implied WHEN: GOCD_CONFIGURE.
 
 
-- set_fact: 
+- set_fact:
    GOCD_FROM_EMAIL_VALID: "{{ GOCD_SMTP_FROM_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
    GOCD_ADMIN_EMAIL_VALID: "{{ GOCD_SMTP_ADMIN_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
 
@@ -27,7 +27,6 @@
         - GOCD_LDAP_SEARCH_FILTER is defined
         - GOCD_LDAP_SEARCH_BASE is defined
   when: GOCD_CONFIGURE_SECURITY
-  
 
 # Configuring Go - Optional
 - name: retrieving server ID
@@ -35,7 +34,7 @@
   register: tmp_go_server_id
   changed_when: false
 
-- set_fact: 
+- set_fact:
    GOCD_SERVER_ID: "{{ tmp_go_server_id.stdout }}"
 
 # Set some defaults
@@ -43,13 +42,13 @@
 
 - name: retrieve existing cruise-config.xml
   fetch: dest="/tmp/{{ ansible_hostname }}/" src="/etc/go/cruise-config.xml" flat="yes"
-  
+
 - name: Save existing pipelines
   command: xmllint --xpath '//pipelines' /etc/go/cruise-config.xml
   register: tmp_go_pipelines_config
   changed_when: false
-  
-- set_fact: 
+
+- set_fact:
    GOCD_EXISTING_PIPELINES: "{{ tmp_go_pipelines_config.stdout }}"
 
 - debug: msg="Existing pipelines {{ GOCD_EXISTING_PIPELINES }}"
@@ -59,7 +58,7 @@
   register: tmp_go_agents_config
   changed_when: false
   
-- set_fact: 
+- set_fact:
    GOCD_EXISTING_AGENTS: "{{ tmp_go_agents_config.stdout }}"
 
 - debug: msg="Existing agents {{ GOCD_EXISTING_AGENTS }}"
