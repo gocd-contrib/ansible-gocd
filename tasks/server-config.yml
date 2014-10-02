@@ -1,7 +1,17 @@
 # All tasks below have an implied WHEN: GOCD_CONFIGURE.
+- name: yum install base packages needed for server config
+  sudo: yes
+  yum: name=libxml2-utils state=present
+  when: ansible_pkg_mgr == 'yum'
+
+- name: apt install base packages needed for server config
+  sudo: yes
+  apt: name=libxml2-utils state=present
+  when: ansible_pkg_mgr == 'apt'
 
 
-- set_fact:
+- name: Validate SMTP from and admin email addresses
+  set_fact:
    GOCD_FROM_EMAIL_VALID: "{{ GOCD_SMTP_FROM_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
    GOCD_ADMIN_EMAIL_VALID: "{{ GOCD_SMTP_ADMIN_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
 
@@ -34,34 +44,77 @@
   register: tmp_go_server_id
   changed_when: false
 
-- set_fact:
+- name: Save server ID as a fact
+  set_fact:
    GOCD_SERVER_ID: "{{ tmp_go_server_id.stdout }}"
-
-# Set some defaults
-- debug: msg="Go server ID {{ GOCD_SERVER_ID }}"
 
 - name: retrieve existing cruise-config.xml
   fetch: dest="/tmp/{{ ansible_hostname }}/" src="/etc/go/cruise-config.xml" flat="yes"
+  changed_when: false
+
+- name: Check for existing pipelines
+  command: xmllint --xpath 'count(//pipelines)' /etc/go/cruise-config.xml
+  register: tmp_go_pipelines_count
+  changed_when: false
+
+- name: Check for existing agents
+  command: xmllint --xpath 'count(//agents)' /etc/go/cruise-config.xml
+  register: tmp_go_agents_count
+  changed_when: false
+
+- name: Check for existing templates
+  command: xmllint --xpath 'count(//templates)' /etc/go/cruise-config.xml
+  register: tmp_go_templates_count
+  changed_when: false
+
+- name: Check for existing environments
+  command: xmllint --xpath 'count(//environments)' /etc/go/cruise-config.xml
+  register: tmp_go_environments_count
+  changed_when: false
 
 - name: Save existing pipelines
   command: xmllint --xpath '//pipelines' /etc/go/cruise-config.xml
   register: tmp_go_pipelines_config
   changed_when: false
+  when: tmp_go_pipelines_count.stdout != "0"
 
-- set_fact:
+- name: Save pipelines as a fact
+  set_fact:
    GOCD_EXISTING_PIPELINES: "{{ tmp_go_pipelines_config.stdout }}"
-
-- debug: msg="Existing pipelines {{ GOCD_EXISTING_PIPELINES }}"
+  when: tmp_go_pipelines_count.stdout != "0"
 
 - name: Save existing agents
   command: xmllint --xpath '//agents' /etc/go/cruise-config.xml
   register: tmp_go_agents_config
   changed_when: false
+  when: tmp_go_agents_count.stdout != "0"
 
-- set_fact:
+- name: Save agents as a fact
+  set_fact:
    GOCD_EXISTING_AGENTS: "{{ tmp_go_agents_config.stdout }}"
+  when: tmp_go_agents_count.stdout != "0"
 
-- debug: msg="Existing agents {{ GOCD_EXISTING_AGENTS }}"
+- name: Save existing templates
+  command: xmllint --xpath '//templates' /etc/go/cruise-config.xml
+  register: tmp_go_templates_config
+  changed_when: false
+  when: tmp_go_agents_count.stdout != "0"
+
+- name: Save templates as a fact
+  set_fact:
+   GOCD_EXISTING_TEMPLATES: "{{ tmp_go_templates_config.stdout }}"
+  when: tmp_go_templates_count.stdout != "0"
+
+- name: Save existing environments
+  command: xmllint --xpath '//environments' /etc/go/cruise-config.xml
+  register: tmp_go_environments_config
+  changed_when: false
+  when: tmp_go_environments_count.stdout != "0"
+
+- name: Save environments as a fact
+  set_fact:
+   GOCD_EXISTING_ENVIRONMENTS: "{{ tmp_go_environments_config.stdout }}"
+  when: tmp_go_environments_count.stdout != "0"
 
 - name: Creating Go configuration file
-  template: backup=yes dest=/etc/go/cruise-config.xml group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }} src=base-config.xml
+  template: backup=no dest=/etc/go/cruise-config.xml group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }} src=base-config.xml
