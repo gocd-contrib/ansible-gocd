@@ -57,7 +57,7 @@
   command: xmllint --xpath '//agents' /etc/go/cruise-config.xml
   register: tmp_go_agents_config
   changed_when: false
-  
+ 
 - set_fact:
    GOCD_EXISTING_AGENTS: "{{ tmp_go_agents_config.stdout }}"
 
