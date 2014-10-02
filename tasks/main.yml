@@ -1,4 +1,6 @@
 ---
    - include: go-common.yml tags=server,agent
    - include: go-server.yml tags=server
+   - include: server-config.yml tags=server
+     when: GOCD_CONFIGURE
    - include: go-agent.yml tags=agent

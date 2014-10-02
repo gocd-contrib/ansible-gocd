@@ -1,0 +1,68 @@
+# All tasks below have an implied WHEN: GOCD_CONFIGURE.
+
+
+- set_fact: 
+   GOCD_FROM_EMAIL_VALID: "{{ GOCD_SMTP_FROM_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
+   GOCD_ADMIN_EMAIL_VALID: "{{ GOCD_SMTP_ADMIN_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
+
+- name: Verify that minimum SMTP configuration variables are defined
+  assert:
+     that:
+        - GOCD_SMTP_HOST is defined
+        - GOCD_FROM_EMAIL_VALID
+        - GOCD_ADMIN_EMAIL_VALID
+  when: GOCD_CONFIGURE_SMTP
+
+- name: If SMTP user specified, password must also be specified
+  assert:
+     that:
+        - GOCD_SMTP_PASSWORD is defined or GOCD_SMTP_ENCRYPTED_PASSWORD is defined
+  when: GOCD_CONFIGURE_SMTP and GOCD_SMTP_USER
+
+- name: Verify that minimum security configuration variables are defined
+  assert:
+     that:
+        - GOCD_LDAP_URL is defined
+        - GOCD_LDAP_MANAGER_DN is defined
+        - GOCD_LDAP_SEARCH_FILTER is defined
+        - GOCD_LDAP_SEARCH_BASE is defined
+  when: GOCD_CONFIGURE_SECURITY
+  
+
+# Configuring Go - Optional
+- name: retrieving server ID
+  command: xmllint --xpath 'string(/cruise/server/@serverId)' /etc/go/cruise-config.xml
+  register: tmp_go_server_id
+  changed_when: false
+
+- set_fact: 
+   GOCD_SERVER_ID: "{{ tmp_go_server_id.stdout }}"
+
+# Set some defaults
+- debug: msg="Go server ID {{ GOCD_SERVER_ID }}"
+
+- name: retrieve existing cruise-config.xml
+  fetch: dest="/tmp/{{ ansible_hostname }}/" src="/etc/go/cruise-config.xml" flat="yes"
+  
+- name: Save existing pipelines
+  command: xmllint --xpath '//pipelines' /etc/go/cruise-config.xml
+  register: tmp_go_pipelines_config
+  changed_when: false
+  
+- set_fact: 
+   GOCD_EXISTING_PIPELINES: "{{ tmp_go_pipelines_config.stdout }}"
+
+- debug: msg="Existing pipelines {{ GOCD_EXISTING_PIPELINES }}"
+
+- name: Save existing agents
+  command: xmllint --xpath '//agents' /etc/go/cruise-config.xml
+  register: tmp_go_agents_config
+  changed_when: false
+  
+- set_fact: 
+   GOCD_EXISTING_AGENTS: "{{ tmp_go_agents_config.stdout }}"
+
+- debug: msg="Existing agents {{ GOCD_EXISTING_AGENTS }}"
+
+- name: Creating Go configuration file
+  template: backup=yes dest=/etc/go/cruise-config.xml group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }} src=base-config.xml

@@ -32,7 +32,31 @@ The default is to install the server and agents onto a single node.  Use the tag
 * Optionally install Git, Subversion, or Mercurial **on all agent & server nodes** by setting any of the following to true.  Default is false.
    * GOCD_SCM_GIT 
    * GOCD_SCM_SVN 
-   * GOCD_SCM_MERCURIAL 
+   * GOCD_SCM_MERCURIAL
+   
+#### Optional Configuration Items
+**This capability is basic now, but the goal is to support full configuration of Go via source control with no dependency on the UI.  Hopefully this will include the ability to use individual pipeline configuration files that are included in the resulting Go configuration file.**
+
+** THIS IS A WORK IN PROGRESS: PLEASE MONITOR YOUR GO LOGS TO DETECT INVALID CHANGES **.  Sorry.
+
+This role can manage the base Go configuration, without losing agent or pipeline definitions.  
+* Enable configuration by setting GOCD_CONFIGURE to true
+   * Required for all other configuration sections, but does nothing by itself *yet*. This will support configuring the server attributes (artifacts dir, command repository location, etc.) in the future.
+
+* Configure SMTP/E-Mail support for notifications
+   * Set GOCD_CONFIGURE_SMTP to true and set appropriate values for the below variables:
+      * GOCD_SMTP_HOST - IP address or hostname of the SMTP server
+      * GOCD_SMTP_FROM_ADDR - Email address notifications are sent from
+      * GOCD_SMTP_ADMIN_ADDR - Email address for the system administrator
+      * GOCD_SMTP_USER [optional] - Username for authentication to the SMTP server
+      * GOCD_SMTP_PASSWORD - Password for SMTP authentication. Go will encrypt it and remove the unencrypted entry.
+      * GOCD_SMTP_ENCRYPTED_PASSWORD - Encrypted password for SMTP authentication.  *One of the two password is required if a SMTP user is defined.*
+      * GOCD_SMTP_TLS [optional] - Use TLS when sending email.  Default is true.
+
+* Configure LDAP security
+   * SEt GOCD_CONFIGURE_LDAP to true.  Don't use this yet. I don't know how to populate the base admin user ;-)
+
+
   
 ### Agents
 * By default one agent will be installed per CPU core available.  You can override this by setting GOCD_AGENT_INSTANCES to a specific value.
