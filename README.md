@@ -26,7 +26,9 @@ installation instructions
 
 This repository is organized as a single Role. That means it can be included, symlinked, submoduled, or galaxied into your existing Ansible repository. 
 
-The default is to install the server and agents onto a single node.  Use the tags of 'server' or 'agent' to selectively install one or the other.
+The default is to install the latest version of the server and agents onto a single node.  Use the tags of 'server' or 'agent' to selectively install one or the other.
+
+To force installation of a specific version override GOCD_GO_VERSION to the desired version.
 ### Server
 * The server listens on port 8153 by default.  
 * Optionally install Git, Subversion, or Mercurial **on all agent & server nodes** by setting any of the following to true.  Default is false.
