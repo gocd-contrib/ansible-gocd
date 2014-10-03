@@ -30,6 +30,7 @@
   command: firewall-cmd --state
   sudo: yes
   when: firewalld|success
+  changed_when: false
   register: firewalld_svc
   ignore_errors: true
 
