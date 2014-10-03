@@ -18,6 +18,9 @@
       </ldap>
       {% endif %}
       <passwordFile path="{{ GOCD_PASSWDFILE_PATH }}" />
+      <admins>
+        <user>{{ GOCD_DEFAULT_ADMIN }}</user>
+      </admins>
    </security>
    {% endif %}
    {% if GOCD_CONFIGURE_SMTP %}
