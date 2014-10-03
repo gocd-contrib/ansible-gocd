@@ -105,7 +105,7 @@
   command: xmllint --xpath '//templates' /etc/go/cruise-config.xml
   register: tmp_go_templates_config
   changed_when: false
-  when: tmp_go_agents_count.stdout != "0"
+  when: tmp_go_templates_count.stdout != "0"
 
 - name: Save templates as a fact
   set_fact:
@@ -134,8 +134,6 @@
 - name: Checking for password file
   stat: "path={{ GOCD_PASSWDFILE_PATH }} get_md5=no"
   register: tmp_go_passwd
-
-- debug: msg=" result {{ tmp_go_passwd.stat.exists }}"
 
 - name: Generating password for default admin user
   command: "htpasswd -sbn {{ GOCD_DEFAULT_ADMIN}} {{ GOCD_DEFAULT_PASS }}"
