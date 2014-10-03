@@ -1,12 +1,18 @@
 # All tasks below have an implied WHEN: GOCD_CONFIGURE.
 - name: yum install base packages needed for server config
   sudo: yes
-  yum: name=libxml2-utils state=present
+  yum: name={{ item }} state=present
+  with_items:
+   - libxml2
+   - httpd-tools
   when: ansible_pkg_mgr == 'yum'
 
 - name: apt install base packages needed for server config
   sudo: yes
-  apt: name=libxml2-utils state=present
+  apt: name={{ item }} state=present
+  with_items:
+   - libxml2-utils
+   - apache2-tools
   when: ansible_pkg_mgr == 'apt'
 
 
@@ -14,6 +20,7 @@
   set_fact:
    GOCD_FROM_EMAIL_VALID: "{{ GOCD_SMTP_FROM_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
    GOCD_ADMIN_EMAIL_VALID: "{{ GOCD_SMTP_ADMIN_ADDR | upper | match(GOCD_VALID_EMAIL_REGEX)}}"
+  when: GOCD_CONFIGURE_SMTP
 
 - name: Verify that minimum SMTP configuration variables are defined
   assert:
@@ -29,14 +36,14 @@
         - GOCD_SMTP_PASSWORD is defined or GOCD_SMTP_ENCRYPTED_PASSWORD is defined
   when: GOCD_CONFIGURE_SMTP and GOCD_SMTP_USER
 
-- name: Verify that minimum security configuration variables are defined
+- name: Verify that minimum LDAP security configuration variables are defined
   assert:
      that:
         - GOCD_LDAP_URL is defined
         - GOCD_LDAP_MANAGER_DN is defined
         - GOCD_LDAP_SEARCH_FILTER is defined
         - GOCD_LDAP_SEARCH_BASE is defined
-  when: GOCD_CONFIGURE_SECURITY
+  when: GOCD_CONFIGURE_SECURITY and (GOCD_LDAP_URL is defined or GOCD_LDAP_MANAGER_DN is defined or GOCD_LDAP_SEARCH_FILTER is defined or GOCD_LDAP_SEARCH_BASE is defined)
 
 # Configuring Go - Optional
 - name: retrieving server ID
@@ -115,6 +122,29 @@
   set_fact:
    GOCD_EXISTING_ENVIRONMENTS: "{{ tmp_go_environments_config.stdout }}"
   when: tmp_go_environments_count.stdout != "0"
+
+# Doing it here so that the default is only in one place (vs in template and in tasks)
+- name: Ensure password file, admin user, and admin passwords all have a default
+  set_fact:
+   GOCD_PASSWDFILE_PATH: "{{ GOCD_PASSWDFILE_PATH | default('/etc/go/passwd') }}"
+   GOCD_DEFAULT_ADMIN: "{{ GOCD_DEFAULT_ADMIN | default('admin') }}"
+   GOCD_DEFAULT_PASS: "{{ GOCD_DEFAULT_PASS | default('insecure') }}"
+  when: GOCD_PASSWDFILE_PATH is not defined or GOCD_DEFAULT_ADMIN is not defined or GOCD_DEFAULT_PASS is not defined
+
+- name: Checking for password file
+  stat: "path={{ GOCD_PASSWDFILE_PATH }} get_md5=no"
+  register: tmp_go_passwd
+
+- debug: msg=" result {{ tmp_go_passwd.stat.exists }}"
+
+- name: Generating password for default admin user
+  command: "htpasswd -sbn {{ GOCD_DEFAULT_ADMIN}} {{ GOCD_DEFAULT_PASS }}"
+  register: tmp_passfile_contents
+  when: tmp_go_passwd.stat.exists == False
+
+- name: Creating default admin user
+  lineinfile: "create=yes dest={{ GOCD_PASSWDFILE_PATH }} line='{{ tmp_passfile_contents.stdout }}' group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }}"
+  when: tmp_go_passwd.stat.exists == False
 
 - name: Creating Go configuration file
   template: backup=no dest=/etc/go/cruise-config.xml group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }} src=base-config.xml

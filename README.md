@@ -55,9 +55,10 @@ This role can manage the base Go configuration, without losing agent or pipeline
       * GOCD_SMTP_ENCRYPTED_PASSWORD - Encrypted password for SMTP authentication.  *One of the two password is required if a SMTP user is defined.*
       * GOCD_SMTP_TLS [optional] - Use TLS when sending email.  Default is true.
 
-* Configure LDAP security
-   * SEt GOCD_CONFIGURE_LDAP to true.  Don't use this yet. I don't know how to populate the base admin user ;-)
-
+* Configure Security
+   * Set GOCD_CONFIGURE_SECURITY to true and optionally define LDAP configure.  By default an admin user of 'admin' with a password of 'insecure' will be created in /etc/go/passwd.
+   * For LDAP authentication specify values for GOCD_LDAP_URL, GOCD_LDAP_MANAGER_DN, GOCD_LDAP_SEARCH_FILTER, and GOCD_LDAP_SEARCH_BASE. See Go's documentation on how to use these.
+   * The default admin username, password, and file path can be overridden with GOCD_DEFAULT_ADMIN, GOCD_DEFAULT_PASS, and GOCD_PASSWORDFILE_PATH
 
   
 ### Agents

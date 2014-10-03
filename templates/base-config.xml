@@ -10,12 +10,14 @@
       commandRepositoryLocation="default" serverId="{{ GOCD_SERVER_ID }}">
    {% if GOCD_CONFIGURE_SECURITY %}
    <security>
+      {% if GOCD_LDAP_URL is defined or GOCD_LDAP_MANAGER_DN is defined or GOCD_LDAP_SEARCH_FILTER is defined or GOCD_LDAP_SEARCH_BASE is defined %}
       <ldap uri="{{ GOCD_LDAP_URL }}" managerDn="{{ GOCD_LDAP_MANAGER_DN }}" searchFilter="{{ GOCD_LDAP_SEARCH_FILTER }}">
          <bases>
             <base value="{{ GOCD_LDAP_SEARCH_BASE }}" />
          </bases>
       </ldap>
-      <passwordFile path="{{ GOCD_PASSWDFILE_PATH | default ('/etc/go/passwd') }}" />
+      {% endif %}
+      <passwordFile path="{{ GOCD_PASSWDFILE_PATH }}" />
    </security>
    {% endif %}
    {% if GOCD_CONFIGURE_SMTP %}
