@@ -31,6 +31,7 @@ The default is to install the latest version of the server and agents onto a sin
 To force installation of a specific version override GOCD_GO_VERSION to the desired version.
 ### Server
 * The server listens on port 8153 by default.  
+* Specify an email address for the Go administrator via GOCD_ADMIN_EMAIL.  **This is required**.
 * Optionally install Git, Subversion, or Mercurial **on all agent & server nodes** by setting any of the following to true.  Default is false.
    * GOCD_SCM_GIT 
    * GOCD_SCM_SVN 
