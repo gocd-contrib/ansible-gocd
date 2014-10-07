@@ -10,6 +10,8 @@
 # Description: Start the Go Agent{{ item }}
 ### END INIT INFO
 
+## {{ ansible_managed }}
+
 PID_FILE="/var/run/go-agent{{ item }}/go-agent.pid"
 CUR_USER=`whoami`
 
@@ -49,7 +51,7 @@ start_go_agent() {
     fi
 
     [ -d /var/run/go-agent{{ item }} ] || (mkdir /var/run/go-agent{{ item }} && chown -R go:go /var/run/go-agent{{ item }})
-
+    
     if [ "$JAVA_HOME" != "" ]; then
         if [ "${CUR_USER}" == "root" ]; then
             start_daemon /bin/su go -c /usr/share/go-agent/agent{{ item }}.sh

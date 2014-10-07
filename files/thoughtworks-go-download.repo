@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 [thoughtworks-go-download]
 name=Thoughtworks Go Repository
 baseurl=http://download.go.cd/gocd-rpm/

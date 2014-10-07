@@ -1,9 +1,9 @@
 # {{ ansible_managed }}
 
-export GO_SERVER={{ GOCD_SERVER_HOST }}
 export GO_SERVER_PORT={{ GOCD_SERVER_PORT }}
+export GO_SERVER_SSL_PORT={{ GOCD_SERVER_SSL_PORT | default(8154) }}
 export JAVA_HOME={{ GOCD_JAVA_HOME }}
-export AGENT_WORK_DIR=/var/lib/go-agent{{item}}
+export SERVER_WORK_DIR=/var/lib/go-server
 DAEMON=Y
 VNC=N
 {% if GOCD_CONFIGURE_SSH %}
@@ -13,7 +13,7 @@ then
    then
      ssh-agent -k
    fi
-   eval "$(ssh-agent -s -a $AGENT_WORK_DIR/ssh-agent)"
+   eval "$(ssh-agent -s -a $SERVER_WORK_DIR/ssh-agent)"
    ssh-add /var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}}
 fi
 {% endif %}

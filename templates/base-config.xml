@@ -7,6 +7,9 @@
       {% if GOCD_SECURESITE_URL is defined %}
       secureSiteUrl="{{ GOCD_SECURESITE_URL }}" 
       {% endif %}
+      {% if GOCD_AUTO_REGISTER_KEY | length > 0 %}
+      agentAutoRegisterKey="{{ GOCD_AUTO_REGISTER_KEY }}"
+      {% endif %}
       commandRepositoryLocation="default" serverId="{{ GOCD_SERVER_ID }}">
    {% if GOCD_CONFIGURE_SECURITY %}
    <security>
@@ -33,7 +36,7 @@
       password="{{ GOCD_SMTP_PASSWORD }}"
       {% endif %}
       {% endif %}
-      tls="{{ GOCD_SMTP_TLS | default('true') | lower }}" from="{{ GOCD_SMTP_FROM_ADDR }}" admin="{{ GOCD_SMTP_ADMIN_ADDR }}" />
+      tls="{{ GOCD_SMTP_TLS | default('true') | lower }}" from="{{ GOCD_SMTP_FROM_ADDR }}" admin="{{ GOCD_ADMIN_EMAIL }}" />
    {% endif %}
    </server>
    {{ GOCD_EXISTING_PIPELINES | default('') }}

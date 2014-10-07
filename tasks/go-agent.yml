@@ -36,23 +36,57 @@
 - file: path="/var/lib/go-agent{{item}}/config" mode=0755 owner=go group=go state=directory
   sudo: yes
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
+  register: gocd_tmp_new_agent
 
 - name: Creating additional agents - defaults.
-  template: "src=go-agent-defaults dest=/etc/default/go-agent{{ item }} mode=0644 owner=root group=root"
+  template: "src=go-agent-defaults dest=/etc/default/go-agent{{ item }} mode=0644 group={{ GOCD_GROUP }} owner={{ GOCD_USER }}"
   sudo: yes
+  notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
+  register: gocd_tmp_agentdefaults
 
 - name: Creating additional agents - service.
   template: "src=go-agent-service dest=/etc/init.d/go-agent{{ item }} mode=0755 owner=root group=root"
   sudo: yes
+  notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
+  register: gocd_tmp_agentservice
 
 - name: Creating additional agents - bash script.
   template: "src=go-agent-sh dest=/usr/share/go-agent/agent{{ item }}.sh mode=0755 owner=root group=root"
   sudo: yes
+  notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
+  register: gocd_tmp_agentscript
+  
+- name: Capture javac version
+  shell: javac -version 2>&1|awk '{print $2}'
+  register: gocd_javac_version
+  changed_when: false
 
-- name: Ensure Go-agents are started and run on startup.
-  service: "name=go-agent{{ item }} state=started enabled=yes"
+- name: Gathering available default resource list 
+  set_fact:
+     gocd_tmp_props: ["{{ ansible_distribution }}", "{{ ansible_system }}", "{{ ansible_distribution }}-{{ ansible_distribution_version }}","java-{{ gocd_javac_version.stdout }}", 'java']
+     
+- name: Determining if agent node is also server node
+  set_fact:
+     gocd_tmp_props: "{{ gocd_tmp_props | union(['OnServer']) }}"
+  when: tmp_gocd_onserver
+     
+- debug: msg="props = {{ gocd_tmp_props | union(GOCD_AGENT_AUTOREGISTER_RESOURCES | default([])) | join (',') }}"
+     
+- name: Registering additional agents.
+  template: "src=agent-autoregister.properties dest=/var/lib/go-agent{{ item }}/config/autoregister.properties mode=0644 group={{ GOCD_GROUP }} owner={{ GOCD_USER }}"
   sudo: yes
+  notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
+  when: gocd_tmp_new_agent.changed
+
+- name: Ensure Go-agents are not running yet (waiting for server config), but are enabled on startup.
+  service: "name=go-agent{{ item }} state=stopped enabled=yes"
+  sudo: yes
+  notify: restart all agents
+  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
+  when: gocd_tmp_new_agent.changed or gocd_tmp_agentservice.changed or gocd_tmp_agentdefaults.changed or gocd_tmp_agentscript.changed
+
+
