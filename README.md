@@ -44,7 +44,7 @@ To force installation of a specific version override GOCD_GO_VERSION to the desi
 
    * Below is a sample config of a pipeline that triggers a backup of Go every 10 minutes, or if the configuration changes. It uses SSH keys for authentication to Github as described later in this document.  It shows ADMIN_PASSWORD as a standard variable, but you should use a secure variable.
    
-```
+```XML
 <pipelines group="goAdmin">
     <pipeline name="backupGo" isLocked="true">
       <timer>0 10 * * * ?</timer>
@@ -122,4 +122,4 @@ Fork away!  Pull requests are always appreciated. :-)
 
 You should be able to do a vagrant up and have a running instance of this role.  Take a look inside Vagrantfile and you'll notice we're forcing a role_path on Ansible.  
 
-It's been tested on Vagrant 1.5.1 thru 1.6.3 with VirtualBox primarily, with a little attention paid to Docker on Linux via the docker-provider plugin.
+It's been tested on Vagrant 1.5.1 thru 1.6.5 with VirtualBox primarily, with a little attention paid to Docker.
