@@ -58,23 +58,21 @@
   notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
   register: gocd_tmp_agentscript
-  
+
 - name: Capture javac version
   shell: javac -version 2>&1|awk '{print $2}'
   register: gocd_javac_version
   changed_when: false
 
-- name: Gathering available default resource list 
+- name: Gathering available default resource list
   set_fact:
      gocd_tmp_props: ["{{ ansible_distribution }}", "{{ ansible_system }}", "{{ ansible_distribution }}-{{ ansible_distribution_version }}","java-{{ gocd_javac_version.stdout }}", 'java']
-     
+
 - name: Determining if agent node is also server node
   set_fact:
      gocd_tmp_props: "{{ gocd_tmp_props | union(['OnServer']) }}"
   when: tmp_gocd_onserver
-     
-- debug: msg="props = {{ gocd_tmp_props | union(GOCD_AGENT_AUTOREGISTER_RESOURCES | default([])) | join (',') }}"
-     
+
 - name: Registering additional agents.
   template: "src=agent-autoregister.properties dest=/var/lib/go-agent{{ item }}/config/autoregister.properties mode=0644 group={{ GOCD_GROUP }} owner={{ GOCD_USER }}"
   sudo: yes

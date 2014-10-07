@@ -2,16 +2,16 @@
 - name: restart all go services
   shell: ls -1 /etc/default/go-agent? /etc/default/go-server
   register: go_services
-  notify: 
+  notify:
      - restart go service
      - ensure go-server running
 
 - name: restart all agents
   shell: ls -1 /etc/default/go-agent?
   register: go_services
-  notify: 
+  notify:
      - restart go service
-     
+
 - name: restart go service
   service: name={{ item | basename }} state=restarted
   with_items: go_services.stdout_lines
