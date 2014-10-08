@@ -13,7 +13,7 @@
   apt: name={{ item }} state=present
   with_items:
    - libxml2-utils
-   - apache2-tools
+   - apache2-utils
    - python-httplib2
   when: ansible_pkg_mgr == 'apt'
 
@@ -144,6 +144,9 @@
 - name: Creating default admin user
   lineinfile: "create=yes dest={{ GOCD_PASSWDFILE_PATH }} line='{{ tmp_passfile_contents.stdout }}' group={{ GOCD_GROUP }} mode=0640 owner={{ GOCD_USER }}"
   when: tmp_go_passwd.stat.exists == False
+
+- name: Wait for Go to start
+  wait_for: port=8153 timeout=180
 
 - name: Trigger a Go configuration backup
   uri: url=http://{{ ansible_hostname }}:8153/go/api/admin/start_backup
