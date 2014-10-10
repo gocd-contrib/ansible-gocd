@@ -5,8 +5,6 @@ This repository was recently transferred from ThoughtWorksInc to Tpbrown.  If yo
 
 Apologies for the change -- it was adding confusion around support. (It's not supported ;-)
 
-
-
 ansible-gocd
 =============
 
