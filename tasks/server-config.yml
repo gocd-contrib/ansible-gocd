@@ -157,17 +157,17 @@
 
 - name: Go's .ssh folder
   file: path=/var/go/.ssh state=directory group={{ GOCD_GROUP }} owner={{ GOCD_USER }}
-  tags: agent, server
+  tag: agent, server
 
 - name: SSH public key
   copy: "dest=/var/go/.ssh/{{ GOCD_SSH_PUBLIC_KEY | basename}} src='{{ GOCD_SSH_PUBLIC_KEY }}' group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }}"
-  tags: agent, server
+  tag: agent, server
   when: GOCD_CONFIGURE_SSH
 
 - name: SSH private key
   copy: "dest=/var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}} src='{{ GOCD_SSH_PRIVATE_KEY }}' group={{ GOCD_GROUP }} mode=0600 owner={{ GOCD_USER }}"
   when: GOCD_CONFIGURE_SSH
-  tags: agent, server
+  tag: agent, server
 
 - name: ensure github.com is a known host
   lineinfile:
@@ -179,5 +179,4 @@
     group: "{{ GOCD_GROUP }}"
     mode: 0644
     owner: "{{ GOCD_USER }}"
- tags: agent, server
-    
+  tag: agent, server
