@@ -71,7 +71,7 @@
 - name: Determining if agent node is also server node
   set_fact:
      gocd_tmp_props: "{{ gocd_tmp_props | union(['OnServer']) }}"
-  when: tmp_gocd_onserver
+  when: tmp_gocd_onserver|default(False)
 
 - name: Registering additional agents.
   template: "src=agent-autoregister.properties dest=/var/lib/go-agent{{ item }}/config/autoregister.properties mode=0644 group={{ GOCD_GROUP }} owner={{ GOCD_USER }}"

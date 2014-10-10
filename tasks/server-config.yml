@@ -157,25 +157,17 @@
 
 - name: Go's .ssh folder
   file: path=/var/go/.ssh state=directory group={{ GOCD_GROUP }} owner={{ GOCD_USER }}
+  tags: agent, server
 
 - name: SSH public key
   copy: "dest=/var/go/.ssh/{{ GOCD_SSH_PUBLIC_KEY | basename}} src='{{ GOCD_SSH_PUBLIC_KEY }}' group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }}"
+  tags: agent, server
   when: GOCD_CONFIGURE_SSH
 
 - name: SSH private key
   copy: "dest=/var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}} src='{{ GOCD_SSH_PRIVATE_KEY }}' group={{ GOCD_GROUP }} mode=0600 owner={{ GOCD_USER }}"
   when: GOCD_CONFIGURE_SSH
-
-# TODO: Templatize go-server defaults and remove this logic.  (See the agent defaults for an example)
-# - name: Ensure ssh-agent is available to Go server
-#   lineinfile: create=no dest=/etc/default/go-server line='eval \"$(ssh-agent -s)\"' group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }}
-#   notify: restart go-server
-#   when: GOCD_CONFIGURE_SSH
-#
-# - name: Ensure ssh-agent loads key for Go server
-#   lineinfile: create=no dest=/etc/default/go-server line='ssh-add /var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}}' group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }}
-#   notify: restart go-server
-#   when: GOCD_CONFIGURE_SSH
+  tags: agent, server
 
 - name: ensure github.com is a known host
   lineinfile:
@@ -187,3 +179,5 @@
     group: "{{ GOCD_GROUP }}"
     mode: 0644
     owner: "{{ GOCD_USER }}"
+ tags: agent, server
+    
