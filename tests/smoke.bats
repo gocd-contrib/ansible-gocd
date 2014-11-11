@@ -17,7 +17,7 @@ assert_failure()
 # This will leave GO_RUNNING and config.xml in the current directory.
 
 @test "Port 8153 is open" {
-   run curl --connect-timeout $MAX_WAIT --fail -qiSL --silent http://localhost:8153/ -o GO_RUNNING
+   run curl --connect-timeout $MAX_WAIT --fail -qiSL --silent http://127.0.0.1:8153/ -o GO_RUNNING
    assert_success
 }
 
@@ -32,7 +32,7 @@ assert_failure()
 }
 
 @test "Can retrieve the config" {
-   run curl --connect-timeout $MAX_WAIT --fail -qSL --silent http://localhost:8153/go/api/admin/config.xml -o config.xml
+   run curl --connect-timeout $MAX_WAIT --fail -qSL --silent http://127.0.0.1:8153/go/api/admin/config.xml -o config.xml
    assert_success
 }
 
