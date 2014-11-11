@@ -46,9 +46,10 @@ Vagrant.configure("2") do |config|
         ansible.sudo = true
         ansible.verbose = ''
         # Use this if you want to override the Role defaults for example to force a specific number of agents.
-      #   ansible.extra_vars = {
-      #     GOCD_AGENT_INSTANCES: 2
-      # }
+        ansible.extra_vars = {
+          GOCD_ADMIN_EMAIL: 'tpbrown@gmail.com'
+          # GOCD_AGENT_INSTANCES: 2
+      }
 	end
 
 	# machines are defined here...
