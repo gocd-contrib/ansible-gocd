@@ -11,7 +11,7 @@ assert_success()
 }
 assert_failure()
 {
-   [ "$status" -eq 1 ]
+   [ "$status" -ne 0 ]
 }
 
 # This will leave GO_RUNNING and config.xml in the current directory.
