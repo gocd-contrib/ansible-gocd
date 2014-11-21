@@ -109,6 +109,7 @@ This role can manage the base Go configuration, without losing agent or pipeline
   * Set GOCD_CONFIGURE_SSH to true
   * GOCD_SSH_PRIVATE_KEY - Fully qualified path to the private key to use.  Both will be stored in /var/go/.ssh.  
   * GOCD_SSH_PUBLIC_KEY - Fully qualified path to the public key.  This is the key you should upload to Github.
+  * GOCD_SSH_KNOWN_DOMAIN - Domain to import as a known host, defaults to github.com but can override for internal git servers.
   
 ### Agents
 * By default one agent will be installed per CPU core available.  You can override this by setting GOCD_AGENT_INSTANCES to a specific value.

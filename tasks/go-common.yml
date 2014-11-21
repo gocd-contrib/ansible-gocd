@@ -51,6 +51,30 @@
   sudo: yes
   user: name={{ GOCD_USER }} comment="Go CD User" uid={{ GOCD_USERID }} group={{ GOCD_GROUP }} home=/var/go
 
+- name: Go's .ssh folder
+  file: path=/var/go/.ssh state=directory group={{ GOCD_GROUP }} owner={{ GOCD_USER }}
+  when: GOCD_CONFIGURE_SSH
+
+- name: SSH public key
+  copy: "dest=/var/go/.ssh/{{ GOCD_SSH_PUBLIC_KEY | basename}} src='{{ GOCD_SSH_PUBLIC_KEY }}' group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }}"
+  when: GOCD_CONFIGURE_SSH
+
+- name: SSH private key
+  copy: "dest=/var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}} src='{{ GOCD_SSH_PRIVATE_KEY }}' group={{ GOCD_GROUP }} mode=0600 owner={{ GOCD_USER }}"
+  when: GOCD_CONFIGURE_SSH
+
+- name: ensure git server is a known host
+  lineinfile:
+    dest: /var/go/.ssh/known_hosts
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa ' + GOCD_SSH_KNOWN_DOMAIN) }}"
+    regexp: "^{{ GOCD_SSH_KNOWN_DOMAIN|replace('.', '\\.') }}"
+    group: "{{ GOCD_GROUP }}"
+    mode: 0644
+    owner: "{{ GOCD_USER }}"
+  when: GOCD_CONFIGURE_SSH
+
 - name: create log directory
   sudo: yes
   file: path=/var/log/go-server state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
