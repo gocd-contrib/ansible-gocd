@@ -3,7 +3,7 @@
 [[ "$OSTYPE" = linux* ]] && CPU_CORES=`nproc`
 [ -z $MAX_WAIT ] && MAX_WAIT=5
 [ -z $GOCD_AGENT_INSTANCES ] && GOCD_AGENT_INSTANCES=${CPU_CORES-1}
-[ -z $GO_VERSION ] && GO_VERSION=14.3.0
+[ -z $GO_VERSION ] && GO_VERSION=14.4.0
 
 assert_success()
 {
