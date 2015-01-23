@@ -101,15 +101,16 @@
 
 - name: determine latest version of Go available in apt repo
   shell: apt-cache show go-server |grep Version |awk '{print $2}' |head -1
-  register: tmp_go_version
+  register: tmp_go_version_apt
   changed_when: false
   when: GOCD_GO_VERSION == 'latest' and ansible_pkg_mgr=='apt'
   tags:
     - skip_ansible_lint
 
+# Variables are registered even if a task is skipped. We use default to choose between apt/yum variable.
 - name: Set GOCD_GO_VERSION to latest
   set_fact:
-     GOCD_GO_VERSION: "{{ tmp_go_version.stdout }}"
+     GOCD_GO_VERSION: "{{ tmp_go_version.stdout | default(tmp_go_version_apt.stdout) }}"
   when: GOCD_GO_VERSION == 'latest'
 
 # Optional dependencies, for both checking for changes & checking out code.  Install on both agent & server.
