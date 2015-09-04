@@ -1,0 +1,8 @@
+---
+   # - include: coreos.yml
+   #   when: ansible_lsb.id=='CoreOS'
+   - include: go-common.yml tags=server,agent
+   - include: go-server.yml tags=server
+   - include: go-agent.yml tags=agent
+   - include: server-config.yml tags=server
+     when: GOCD_CONFIGURE

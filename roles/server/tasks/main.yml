@@ -1,4 +1,0 @@
----
-   - include: go-server.yml 
-   - include: server-config.yml 
-     when: GOCD_CONFIGURE
