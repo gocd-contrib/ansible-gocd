@@ -1,0 +1,27 @@
+GOCD_GO_VERSION: latest
+GOCD_JAVA_HOME: /usr/lib/jvm/java
+GOCD_AGENT_INSTANCES: "{{ ansible_processor_count * ansible_processor_cores }}"
+GOCD_SERVER_HOST: localhost
+GOCD_SERVER_PORT: 8153
+GOCD_USER: go
+GOCD_USERID: 5000
+GOCD_GROUP: go
+GOCD_GROUPID: 5000
+
+# Agent auto-registration; this is insecure and you should override this value for real usage
+GOCD_AUTO_REGISTER_KEY: insecure_registration_key
+
+# Basic SCM dependencies
+GOCD_SCM_GIT: false
+GOCD_SCM_MERCURIAL: false
+GOCD_SCM_SVN: false
+
+# Base server configuration - Optional
+GOCD_CONFIGURE: false
+GOCD_CONFIGURE_SMTP: false
+GOCD_CONFIGURE_SECURITY: false
+GOCD_CONFIGURE_SSH: false
+GOCD_SSH_KNOWN_DOMAIN: github.com
+
+# Used internally. Do not change.
+GOCD_VALID_EMAIL_REGEX: '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'
