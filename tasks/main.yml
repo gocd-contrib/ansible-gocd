@@ -1,8 +1,11 @@
 ---
    # - include: coreos.yml
    #   when: ansible_lsb.id=='CoreOS'
-   - include: go-common.yml tags=server,agent
-   - include: go-server.yml tags=server
-   - include: go-agent.yml tags=agent
-   - include: server-config.yml tags=server
-     when: GOCD_CONFIGURE
+   - include: go-common.yml
+     when: "'server' in GOCD_ROLES or 'agent' in GOCD_ROLES"
+   - include: go-server.yml
+     when: "'server' in GOCD_ROLES"
+   - include: go-agent.yml
+     when: "'agent' in GOCD_ROLES"
+   - include: server-config.yml
+     when: "GOCD_CONFIGURE is defined and 'server' in GOCD_ROLES"

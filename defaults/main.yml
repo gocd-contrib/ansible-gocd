@@ -8,7 +8,9 @@ GOCD_USER: go
 GOCD_USERID: 5000
 GOCD_GROUP: go
 GOCD_GROUPID: 5000
-
+GOCD_ROLES:
+  - server
+  - agent
 # Agent auto-registration; this is insecure and you should override this value for real usage
 GOCD_AUTO_REGISTER_KEY: insecure_registration_key
 
