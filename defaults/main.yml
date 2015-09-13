@@ -14,6 +14,10 @@ GOCD_ROLES:
 # Agent auto-registration; this is insecure and you should override this value for real usage
 GOCD_AUTO_REGISTER_KEY: insecure_registration_key
 
+# Use to insert additonal environment variables.
+GOCD_AGENT_ADDITIONAL_DEFAULTS:
+GOCD_SERVER_ADDITIONAL_DEFAULTS:
+
 # Basic SCM dependencies
 GOCD_SCM_GIT: false
 GOCD_SCM_MERCURIAL: false
