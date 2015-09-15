@@ -23,7 +23,7 @@
      - ensure go-server running
 
 - name: ensure go-server running
-  wait_for: port=8153 timeout=180 delay=10
+  wait_for: port={{ GOCD_SERVER_PORT }} timeout=180 delay=10
 
 - name: restart firewalld
   sudo: yes

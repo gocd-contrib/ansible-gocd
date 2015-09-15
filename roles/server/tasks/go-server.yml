@@ -43,7 +43,7 @@
 
 - name: enable Go HTTP traffic through firewalld
   sudo: yes
-  firewalld: port=8153/tcp permanent=true state=enabled
+  firewalld: port={{ GOCD_SERVER_PORT }}/tcp permanent=true state=enabled
   when: firewalld|success and firewalld_svc.stdout=='running'
   notify:
     - restart firewalld
@@ -63,7 +63,7 @@
 
 - name: enable Go HTTP traffic through ufw
   sudo: yes
-  ufw: rule=allow port=8153 proto=tcp
+  ufw: rule=allow port={{ GOCD_SERVER_PORT }} proto=tcp
   when: ufw|success
 
 - name: enable Go HTTPS traffic through ufw
