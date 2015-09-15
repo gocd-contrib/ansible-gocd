@@ -39,7 +39,7 @@
 
 - name: thoughtworks go apt repository
   sudo: yes
-  apt_repository: repo='deb http://dl.bintray.com/gocd/gocd-deb/ /' state=present
+  apt_repository: repo='deb {{GOCD_DEBIAN_REPOSITORY}} /' state=present
   when: ansible_pkg_mgr == 'apt'
 
 # Note: If the user or group exists, but under another ID, Ansible will try and change it.
