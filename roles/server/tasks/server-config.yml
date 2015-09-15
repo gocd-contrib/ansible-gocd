@@ -35,7 +35,7 @@
   assert:
      that:
         - GOCD_SMTP_PASSWORD is defined or GOCD_SMTP_ENCRYPTED_PASSWORD is defined
-  when: GOCD_CONFIGURE_SMTP and GOCD_SMTP_USER
+  when: GOCD_CONFIGURE_SMTP is defined and GOCD_SMTP_USER is defined
 
 - name: Verify that minimum LDAP security configuration variables are defined
   assert:
