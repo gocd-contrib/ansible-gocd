@@ -27,22 +27,20 @@ Vagrant.configure("2") do |config|
   end
 
 	# support docker
-	config.vm.provider :docker do |docker, override|
-		override.vm.box = 'dummy'
-		override.vm.box_url = 'http://bit.ly/vagrant-docker-dummy'
-		docker.image = "tlalexan/vagrant-centos:latest"
-	end
+#	config.vm.provider :docker do |docker, override|
+#		override.vm.box = 'dummy'
+#		override.vm.box_url = 'http://bit.ly/vagrant-docker-dummy'
+#		docker.image = "tlalexan/vagrant-centos:latest"
+#	end
 
-  # Support testing roles by themselves.  You can't specify this on command line, but can via environment variable.
-  # This assumes you've checked out into a directory matching the role name (ansible-gocd)
-  ENV['ANSIBLE_ROLES_PATH'] = '..'
 
-	# configure ansible...
     config.vm.provision "ansible" do |ansible|
+        ansible.groups = {
+            "server" => ["default"],
+            "agents" => ["default"]
+        }
         ansible.host_key_checking = false
         ansible.playbook = "site.yml"
-        # Set tags to either server or agent as needed.  Default is both.
-        #ansible.tags = "server,agent"
         ansible.sudo = true
         ansible.verbose = ''
         # Use this if you want to override the Role defaults for example to force a specific number of agents.
@@ -59,6 +57,7 @@ Vagrant.configure("2") do |config|
   end
   # config.vm.network :private_network, ip: "192.168.50.2"
   config.vm.network "forwarded_port", guest:8153, host: 8153
-
+  # don't need mounted folder
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 	
 end
