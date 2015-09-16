@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-{{GOCD_SERVER_ADDITIONAL_DEFAULTS}}
+{{GOCD_SERVER_ADDITIONAL_DEFAULTS | default("") }}
 
 export GO_SERVER_PORT={{ GOCD_SERVER_PORT }}
 export GO_SERVER_SSL_PORT={{ GOCD_SERVER_SSL_PORT | default(8154) }}

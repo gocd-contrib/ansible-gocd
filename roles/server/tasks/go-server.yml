@@ -17,8 +17,8 @@
 - name: replace /etc/default/go-server from package
   template: "src=go-server-defaults dest=/etc/default/go-server mode=0644 group={{ GOCD_GROUP }} owner={{ GOCD_USER }}"
   sudo: yes
-  notify: restart go-server
-  with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
+  notify:
+  - restart go-server
 
 - name: start go-server
   sudo: yes
