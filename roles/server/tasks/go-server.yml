@@ -8,7 +8,7 @@
 
 - name: apt install go-server
   sudo: yes
-  apt: pkg=go-server={{ GOCD_GO_VERSION }} state=present force=yes
+  apt: pkg=go-server{{ '=' + GOCD_GO_VERSION if GOCD_GO_VERSION != 'latest' else ''}} state=present force=yes
   when: ansible_pkg_mgr=='apt'
 
 - name: flag that we're configuration a Go server
