@@ -23,6 +23,9 @@ GOCD_CONFIGURE_SECURITY: false
 GOCD_CONFIGURE_SSH: false
 GOCD_SSH_KNOWN_DOMAIN: github.com
 
+# Use to insert additonal environment variables.
+GOCD_SERVER_ADDITIONAL_DEFAULTS:
+
 # Used internally. Do not change.
 GOCD_VALID_EMAIL_REGEX: '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'
 
