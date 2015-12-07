@@ -22,11 +22,16 @@ requirements
 installation instructions
 =========================
 
-This repository is organized as a single Role. That means it can be included, symlinked, submoduled, or galaxied into your existing Ansible repository. 
+This repository is organized as a multi-role playbook. In order to use it in an existing playbook, you must reference the roles as follows:
+```
+roles:
+  - tpbrown.gocd/roles/common
+  - tpbrown.gocd/roles/agent
+  - tpbrown.gocd/roles/server
+```
 
-The default is to install the latest version of the server and agents onto a single node.  Use the tags of 'server' or 'agent' to selectively install one or the other.
+The default is to install the latest version of the server and agent. To force installation of a specific version override GOCD_GO_VERSION to the desired version.
 
-To force installation of a specific version override GOCD_GO_VERSION to the desired version.
 ### Server
 * The server listens on port 8153 by default.  
 * Specify an email address for the Go administrator via GOCD_ADMIN_EMAIL.  **This is required**.
