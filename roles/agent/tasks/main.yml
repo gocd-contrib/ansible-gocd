@@ -6,7 +6,7 @@
 
 - name: apt install go-agent
   sudo: yes
-  apt: pkg=go-agent={{ GOCD_GO_VERSION }} state=present force=yes
+  apt: pkg=go-agent{{ '=' + GOCD_GO_VERSION if GOCD_GO_VERSION != 'latest' else ''}} state=present force=yes
   when: ansible_pkg_mgr=='apt'
   # notify:
   # - restart go-agent
