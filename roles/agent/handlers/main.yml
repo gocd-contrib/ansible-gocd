@@ -15,6 +15,7 @@
 - name: restart go service
   service: name={{ item | basename }} state=restarted
   with_items: go_services.stdout_lines
+  sudo: yes
 
 - name: restart go-server
   sudo: yes
