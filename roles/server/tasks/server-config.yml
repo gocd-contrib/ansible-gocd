@@ -149,8 +149,7 @@
   wait_for: port={{ GOCD_SERVER_PORT }} timeout=180
 
 - name: Trigger a Go configuration backup
-  uri: url=http://{{ ansible_hostname }}:{{ GOCD_SERVER_PORT }}/go/api/admin/start_backup
-     method=POST user={{ GOCD_DEFAULT_ADMIN }} password={{ GOCD_DEFAULT_PASS }}
+  uri: url=http://{{ ansible_hostname }}:{{ GOCD_SERVER_PORT }}/go/api/backups method=POST HEADER_accept='application/vnd.go.cd.v1+json' user={{ GOCD_DEFAULT_ADMIN }} password={{ GOCD_DEFAULT_PASS }}
 
 - name: Creating Go configuration file
   template: backup=no dest=/etc/go/cruise-config.xml group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }} src=base-config.xml
