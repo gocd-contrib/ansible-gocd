@@ -15,10 +15,10 @@
 - name: restart go service
   service: name={{ item | basename }} state=restarted
   with_items: go_services.stdout_lines
-  sudo: yes
+  become: yes
 
 - name: restart go-server
-  sudo: yes
+  become: yes
   service: name=go-server state=restarted
   notify:
      - ensure go-server running
@@ -27,5 +27,5 @@
   wait_for: port={{ GOCD_SERVER_PORT }} timeout=180 delay=10
 
 - name: restart firewalld
-  sudo: yes
+  become: yes
   service: name=firewalld state=restarted

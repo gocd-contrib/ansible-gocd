@@ -4,7 +4,7 @@
   when: ansible_pkg_mgr != 'yum' and ansible_pkg_mgr != 'apt'
 
 - name: yum install Java 1.7 and some basic dependencies
-  sudo: yes
+  become: yes
   yum: name={{ item }} state=present
   with_items:
    - unzip
@@ -13,7 +13,7 @@
   when: ansible_pkg_mgr == 'yum'
 
 - name: apt install Java 1.7 and some basic dependencies. Must be installed before repo.
-  sudo: yes
+  become: yes
   apt: name={{ item }} state=present update_cache=true
   with_items:
    - python-pycurl
@@ -31,24 +31,24 @@
      GOCD_JAVA_HOME: "{{ system_java_home.stdout }}"
 
 - name: thoughtworks go yum repository
-  sudo: yes
+  become: yes
   copy: src=thoughtworks-go-download.repo
         dest=/etc/yum.repos.d/
         owner=root group=root mode=0644
   when: ansible_pkg_mgr == 'yum'
 
 - name: thoughtworks go apt repository
-  sudo: yes
+  become: yes
   apt_repository: repo='deb {{GOCD_DEBIAN_REPOSITORY}} /' state=present
   when: ansible_pkg_mgr == 'apt'
 
 # Note: If the user or group exists, but under another ID, Ansible will try and change it.
 - name: add go group
-  sudo: yes
+  become: yes
   group: gid={{ GOCD_GROUPID }} name={{ GOCD_GROUP }} state=present
 
 - name: add go user with home at /var/go
-  sudo: yes
+  become: yes
   user: name={{ GOCD_USER }} comment="Go CD User" uid={{ GOCD_USERID }} group={{ GOCD_GROUP }} home=/var/go
 
 - name: Go's .ssh folder
@@ -76,19 +76,19 @@
   when: GOCD_CONFIGURE_SSH
 
 - name: create log directory
-  sudo: yes
+  become: yes
   file: path=/var/log/go-server state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
 
 - name: create run directory
-  sudo: yes
+  become: yes
   file: path=/var/run/go-server state=directory
 
 - name: create var/lib/go-server directory
-  sudo: yes
+  become: yes
   file: path=/var/lib/go-server state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
 
 - name: create etc/go directory
-  sudo: yes
+  become: yes
   file: path=/etc/go state=directory owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
 
 - name: determine latest version of Go available in yum repo
@@ -115,31 +115,31 @@
 
 # Optional dependencies, for both checking for changes & checking out code.  Install on both agent & server.
 - name: yum install git
-  sudo: yes
+  become: yes
   yum: pkg=git state=installed
   when: ansible_pkg_mgr=='yum' and GOCD_SCM_GIT
 
 - name: apt install git
-  sudo: yes
+  become: yes
   apt: pkg=git state=present
   when: ansible_pkg_mgr=='apt' and GOCD_SCM_GIT
 
 - name: yum install mercurial
-  sudo: yes
+  become: yes
   yum: pkg=mercurial state=installed
   when: ansible_pkg_mgr=='yum' and GOCD_SCM_MERCURIAL
 
 - name: apt install mercurial
-  sudo: yes
+  become: yes
   apt: pkg=mercurial state=present
   when: ansible_pkg_mgr=='apt' and GOCD_SCM_MERCURIAL
 
 - name: yum install subversion
-  sudo: yes
+  become: yes
   yum: pkg=subversion state=installed
   when: ansible_pkg_mgr=='yum' and GOCD_SCM_SVN
 
 - name: apt install subversion
-  sudo: yes
+  become: yes
   apt: pkg=subversion state=present
   when: ansible_pkg_mgr=='apt' and GOCD_SCM_SVN

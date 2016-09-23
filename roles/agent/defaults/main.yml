@@ -1,4 +1,4 @@
-GOCD_DEBIAN_REPOSITORY: http://dl.bintray.com/gocd/gocd-deb/
+GOCD_DEBIAN_REPOSITORY: https://download.go.cd
 GOCD_GO_VERSION: latest
 GOCD_JAVA_HOME: /usr/lib/jvm/java
 GOCD_AGENT_INSTANCES: "{{ ansible_processor_count * ansible_processor_cores }}"
