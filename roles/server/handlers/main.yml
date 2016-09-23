@@ -17,7 +17,7 @@
   with_items: go_services.stdout_lines
 
 - name: restart go-server
-  sudo: yes
+  become: yes
   service: name=go-server state=restarted
   notify:
      - ensure go-server running
@@ -26,5 +26,5 @@
   wait_for: port=8153 timeout=180 delay=10
 
 - name: restart firewalld
-  sudo: yes
+  become: yes
   service: name=firewalld state=restarted
