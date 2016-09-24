@@ -55,9 +55,9 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", "2048"]
   end
-  # config.vm.network :private_network, ip: "192.168.50.2"
+  #config.vm.network "private_network", ip: "192.168.50.2"
   config.vm.network "forwarded_port", guest:8153, host: 8153
   # don't need mounted folder
   config.vm.synced_folder ".", "/vagrant", disabled: true
-	
+
 end
