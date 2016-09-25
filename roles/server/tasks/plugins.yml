@@ -3,13 +3,13 @@
 - name: Download install GOCD Plugins
   get_url: url="{{ item }}" dest="{{ GOCD_SERVER_PLUGIN }}"
   become_user: "{{ GOCD_USER }}"
-  with_items: GOCD_PLUGINS_INSTALL
+  with_items: "{{GOCD_PLUGINS_INSTALL}}"
   notify:
    - restart go-server
 
 - name: Remove GOCD  Plugins
   file: path="{{ GOCD_SERVER_PLUGIN }}/{{ item | basename }}" state=absent
-  with_items: GOCD_PLUGINS_REMOVE
+  with_items: "{{GOCD_PLUGINS_REMOVE | default([])}}"
   become: yes
   notify:
    - restart go-server

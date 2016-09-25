@@ -13,7 +13,7 @@
      - restart go service
 
 - name: restart go service
-  service: name={{ item | basename }} state=restarted
+  service: "name={{ item | basename }} state=restarted"
   with_items: go_services.stdout_lines
 
 - name: restart go-server

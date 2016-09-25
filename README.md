@@ -1,7 +1,7 @@
 [![Snap-CI](https://snap-ci.com/Tpbrown/ansible-gocd/branch/master/build_image)](https://snap-ci.com/Tpbrown/ansible-gocd/)
-ATTENTION: 
+ATTENTION:
 =
-This repository was recently transferred from ThoughtWorksInc to Tpbrown.  If you've forked it you'll need to update your remotes (or delete & re-fork). 
+This repository was recently transferred from ThoughtWorksInc to Tpbrown.  If you've forked it you'll need to update your remotes (or delete & re-fork).
 
 Apologies for the change -- it was adding confusion around support. (It's not supported ;-)
 
@@ -128,3 +128,5 @@ Fork away!  Pull requests are always appreciated. :-)
 You should be able to do a vagrant up and have a running instance of this role.  Take a look inside Vagrantfile and you'll notice we're forcing a role_path on Ansible.  
 
 It's been tested on Vagrant 1.5.1 thru 1.6.5 with VirtualBox primarily, with a little attention paid to Docker.
+
+Vagrant 1.8.5 has also been tested. Should you encounter "Warning: Authentication Failure" when attempting to use `vagrant up`, the issue can be remedied with [this patch for Vagrant](https://github.com/mitchellh/vagrant/issues/7610).

@@ -2,6 +2,6 @@
 
 [thoughtworks-go-download]
 name=Thoughtworks Go Repository
-baseurl=http://dl.bintray.com/gocd/gocd-rpm/
+baseurl=https://download.go.cd
 enabled=1
 gpgcheck=0
