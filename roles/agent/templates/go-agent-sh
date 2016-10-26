@@ -1,22 +1,86 @@
 #!/bin/bash
 # {{ ansible_managed }}
 
+SERVICE_NAME=go-agent{{ item }}
 PRODUCTION_MODE=${PRODUCTION_MODE:-"Y"}
+GO_SERVER={{ GOCD_SERVER_HOST }}
+GO_SERVER_PORT={{ GOCD_SERVER_PORT }}
 
 if [ "$PRODUCTION_MODE" == "Y" ]; then
-    if [ -f /etc/default/go-agent{{ item }} ]; then
-        echo "[`date`] using default settings from /etc/default/go-agent{{ item }}"
-        . /etc/default/go-agent{{ item }}
+    if [ -f /etc/default/${SERVICE_NAME} ]; then
+        echo "[$(date)] using default settings from /etc/default/${SERVICE_NAME}"
+        . /etc/default/${SERVICE_NAME}
     fi
 fi
 
-CWD=`dirname "$0"`
-AGENT_DIR=`(cd "$CWD" && pwd)`
+yell() {
+  echo "WARN: $*" >&2;
+}
+
+die() {
+    yell "FATAL: $1"
+    exit ${2:-1}
+}
+
+function autoDetectJavaExecutable() {
+  local java_cmd
+  # Prefer using GO_JAVA_HOME, over JAVA_HOME
+  GO_JAVA_HOME=${GO_JAVA_HOME:-"$JAVA_HOME"}
+
+  if [ -n "$GO_JAVA_HOME" ] ; then
+      if [ -x "$GO_JAVA_HOME/jre/sh/java" ] ; then
+          # IBM's JDK on AIX uses strange locations for the executables
+          java_cmd="$GO_JAVA_HOME/jre/sh/java"
+      else
+          java_cmd="$GO_JAVA_HOME/bin/java"
+      fi
+      if [ ! -x "$java_cmd" ] ; then
+          die "ERROR: GO_JAVA_HOME is set to an invalid directory: $GO_JAVA_HOME
+
+Please set the GO_JAVA_HOME variable in your environment to match the
+location of your Java installation."
+      fi
+  else
+      java_cmd="java"
+      command -v java >/dev/null 2>&1 || die "ERROR: GO_JAVA_HOME is not set and no 'java' command could be found in your PATH.
+
+Please set the GO_JAVA_HOME variable in your environment to match the
+location of your Java installation."
+  fi
+
+  echo "$java_cmd"
+}
+
+declare -a _stringToArgs
+function stringToArgsArray() {
+  _stringToArgs=("$@")
+}
+
+function autoDetectGoServerUrl() {
+  local url
+
+  if [[ ! -z "${GO_SERVER}" || ! -z "${GO_SERVER_PORT}" ]]; then
+    yell "The environment variable GO_SERVER and GO_SERVER_PORT has been deprecated in favor of GO_SERVER_URL. Please set GO_SERVER_URL instead to a https url (https://example.com:8154/go)"
+  fi
+
+  if [ -z "${GO_SERVER_URL}" ]; then
+    if [ -z "${GO_SERVER}" ]; then
+      url="https://127.0.0.1:8154/go"
+    else
+      url="https://${GO_SERVER}:8154/go"
+    fi
+  else
+    url="${GO_SERVER_URL}"
+  fi
+
+  echo "${url}"
+}
+
+CWD="$(dirname "$0")"
+AGENT_DIR="$(cd "$CWD" && pwd)"
 
 AGENT_MEM=${AGENT_MEM:-"128m"}
 AGENT_MAX_MEM=${AGENT_MAX_MEM:-"256m"}
-GO_SERVER=${GO_SERVER:-"127.0.0.1"}
-GO_SERVER_PORT=${GO_SERVER_PORT:-"8153"}
 JVM_DEBUG_PORT=${JVM_DEBUG_PORT:-"5006"}
 VNC=${VNC:-"N"}
 
@@ -30,25 +94,29 @@ else
     AGENT_WORK_DIR=$AGENT_DIR
 fi
 
+if [ ! -d "${AGENT_WORK_DIR}" ]; then
+    echo Agent working directory ${AGENT_WORK_DIR} does not exist
+    exit 2
+fi
+
 if [ "$PRODUCTION_MODE" == "Y" ]; then
-    if [ -d /var/log/go-agent{{ item }} ]; then
-        LOG_DIR=/var/log/go-agent{{ item }}
+    if [ -d /var/log/${SERVICE_NAME} ]; then
+        LOG_DIR=/var/log/${SERVICE_NAME}
     else
-		LOG_DIR=$AGENT_WORK_DIR
-	fi
+	    LOG_DIR=$AGENT_WORK_DIR
+    fi
 else
     LOG_DIR=$AGENT_WORK_DIR
 fi
 
-LOG_FILE=$LOG_DIR/go-agent-bootstrapper.log
-
+STDOUT_LOG_FILE=$LOG_DIR/${SERVICE_NAME}-bootstrapper.out.log
 
 if [ "$PID_FILE" ]; then
-    echo "[`date`] Use PID_FILE: $PID_FILE"
+    echo "[$(date)] Use PID_FILE: $PID_FILE"
 elif [ "$PRODUCTION_MODE" == "Y" ]; then
-    if [ -d /var/run/go-agent{{ item }} ]; then
-        PID_FILE=/var/run/go-agent{{ item }}/go-agent.pid
-	else
+    if [ -d /var/run/go-agent ]; then
+        PID_FILE=/var/run/go-agent/${SERVICE_NAME}.pid
+    else
     	PID_FILE="$AGENT_WORK_DIR/go-agent.pid"
     fi
 else
@@ -56,7 +124,7 @@ else
 fi
 
 if [ "$VNC" == "Y" ]; then
-    echo "[`date`] Starting up VNC on :3"
+    echo "[$(date)] Starting up VNC on :3"
     /usr/bin/vncserver :3
     DISPLAY=:3
     export DISPLAY
@@ -69,32 +137,36 @@ else
 fi
 
 if [ "$GC_LOG" != "" ]; then
-    GC_LOG="-verbose:gc -Xloggc:go-agent-gc.log -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCDetails -XX:+PrintGC"
+    GC_LOG="-verbose:gc -Xloggc:${SERVICE_NAME}-gc.log -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCDetails -XX:+PrintGC"
 else
     GC_LOG=""
 fi
 
 AGENT_STARTUP_ARGS="-Dcruise.console.publish.interval=10 -Xms$AGENT_MEM -Xmx$AGENT_MAX_MEM $JVM_DEBUG $GC_LOG $GO_AGENT_SYSTEM_PROPERTIES"
+if [ "$TMPDIR" != "" ]; then
+    AGENT_STARTUP_ARGS="$AGENT_STARTUP_ARGS -Djava.io.tmpdir=$TMPDIR"
+fi
+if [ "$USE_URANDOM" != "false" ] && [ -e "/dev/urandom" ]; then
+    AGENT_STARTUP_ARGS="$AGENT_STARTUP_ARGS -Djava.security.egd=file:/dev/./urandom"
+fi
 export AGENT_STARTUP_ARGS
 export LOG_DIR
 export LOG_FILE
 
-CMD="$JAVA_HOME/bin/java -jar \"$AGENT_DIR/agent-bootstrapper.jar\" $GO_SERVER $GO_SERVER_PORT go-agent{{ item }}-running"
+eval stringToArgsArray "$AGENT_BOOTSTRAPPER_ARGS"
+AGENT_BOOTSTRAPPER_ARGS=("${_stringToArgs[@]}")
 
-echo "[`date`] Starting Go Agent Bootstrapper with command: $CMD" >>$LOG_FILE
-echo "[`date`] Starting Go Agent Bootstrapper in directory: $AGENT_WORK_DIR" >>$LOG_FILE
-echo "[`date`] AGENT_STARTUP_ARGS=$AGENT_STARTUP_ARGS" >>$LOG_FILE
+RUN_CMD=("$(autoDetectJavaExecutable)" "-jar" "$AGENT_DIR/agent-bootstrapper.jar" "-serverUrl" "$(autoDetectGoServerUrl)" "${AGENT_BOOTSTRAPPER_ARGS[@]}")
+
+echo "[$(date)] Starting Go Agent Bootstrapper with command: ${RUN_CMD[@]}" >>"$STDOUT_LOG_FILE"
+echo "[$(date)] Starting Go Agent Bootstrapper in directory: $AGENT_WORK_DIR" >>"$STDOUT_LOG_FILE"
+echo "[$(date)] AGENT_STARTUP_ARGS=$AGENT_STARTUP_ARGS" >>"$STDOUT_LOG_FILE"
 cd "$AGENT_WORK_DIR"
 
-if [ "$JAVA_HOME" == "" ]; then
-    echo "Please set JAVA_HOME to proceed."
-    exit 1
-fi
-
 if [ "$DAEMON" == "Y" ]; then
-    eval "nohup $CMD >>$LOG_FILE &"
-    echo $! >$PID_FILE
+    exec nohup "${RUN_CMD[@]}" >> "$STDOUT_LOG_FILE" 2>&1 &
+    disown $!
+    echo $! >"$PID_FILE"
 else
-    eval "$CMD"
+    exec "${RUN_CMD[@]}"
 fi
-
