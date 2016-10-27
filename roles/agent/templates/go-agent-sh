@@ -3,8 +3,6 @@
 
 SERVICE_NAME=go-agent{{ item }}
 PRODUCTION_MODE=${PRODUCTION_MODE:-"Y"}
-GO_SERVER={{ GOCD_SERVER_HOST }}
-GO_SERVER_PORT={{ GOCD_SERVER_PORT }}
 
 if [ "$PRODUCTION_MODE" == "Y" ]; then
     if [ -f /etc/default/${SERVICE_NAME} ]; then
@@ -57,23 +55,7 @@ function stringToArgsArray() {
 }
 
 function autoDetectGoServerUrl() {
-  local url
-
-  if [[ ! -z "${GO_SERVER}" || ! -z "${GO_SERVER_PORT}" ]]; then
-    yell "The environment variable GO_SERVER and GO_SERVER_PORT has been deprecated in favor of GO_SERVER_URL. Please set GO_SERVER_URL instead to a https url (https://example.com:8154/go)"
-  fi
-
-  if [ -z "${GO_SERVER_URL}" ]; then
-    if [ -z "${GO_SERVER}" ]; then
-      url="https://127.0.0.1:8154/go"
-    else
-      url="https://${GO_SERVER}:8154/go"
-    fi
-  else
-    url="${GO_SERVER_URL}"
-  fi
-
-  echo "${url}"
+  echo "https://{{ GOCD_SERVER_HOST }}:8154/go"
 }
 
 CWD="$(dirname "$0")"
