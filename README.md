@@ -1,9 +1,5 @@
 [![Snap-CI](https://snap-ci.com/Tpbrown/ansible-gocd/branch/master/build_image)](https://snap-ci.com/Tpbrown/ansible-gocd/)
-ATTENTION:
-=
-This repository was recently transferred from ThoughtWorksInc to Tpbrown.  If you've forked it you'll need to update your remotes (or delete & re-fork).
 
-Apologies for the change -- it was adding confusion around support. (It's not supported ;-)
 
 ansible-gocd
 =============
