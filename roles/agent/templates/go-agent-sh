@@ -138,7 +138,7 @@ export LOG_FILE
 eval stringToArgsArray "$AGENT_BOOTSTRAPPER_ARGS"
 AGENT_BOOTSTRAPPER_ARGS=("${_stringToArgs[@]}")
 
-RUN_CMD=("$(autoDetectJavaExecutable)" "-jar" "$AGENT_DIR/agent-bootstrapper.jar" "-serverUrl" "$(autoDetectGoServerUrl)" "${AGENT_BOOTSTRAPPER_ARGS[@]}")
+RUN_CMD=("$(autoDetectJavaExecutable)" "-Dgo-agent{{ item }}-running" "-jar" "$AGENT_DIR/agent-bootstrapper.jar" "-serverUrl" "$(autoDetectGoServerUrl)" "${AGENT_BOOTSTRAPPER_ARGS[@]}")
 
 echo "[$(date)] Starting Go Agent Bootstrapper with command: ${RUN_CMD[@]}" >>"$STDOUT_LOG_FILE"
 echo "[$(date)] Starting Go Agent Bootstrapper in directory: $AGENT_WORK_DIR" >>"$STDOUT_LOG_FILE"
