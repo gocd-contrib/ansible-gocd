@@ -2,6 +2,6 @@
 
 [thoughtworks-go-download]
 name=Thoughtworks Go Repository
-baseurl=https://download.go.cd
+baseurl=https://download.gocd.io
 enabled=1
 gpgcheck=0
