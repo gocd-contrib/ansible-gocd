@@ -3,7 +3,7 @@ BACKUP_HOME='/var/lib/go-server/artifacts/serverBackups'
 BACKUP_TMP=`mktemp -d`
 WORKING_DIR=`pwd`/remote
 
-curl 'https://{{ GOCD_SERVER_HOST }}:8154/go/api/backups' \
+curl 'https://{{ GOCD_SERVER_HOST }}:{{ GO_SERVER_SSL_PORT }}/go/api/backups' \
       --insecure \
       -u "$ADMIN_USER:$ADMIN_PASSWORD" \
       -H 'Confirm: true' \
