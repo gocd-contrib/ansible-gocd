@@ -17,13 +17,15 @@ git config push.default simple
 git config user.email "{{ GOCD_ADMIN_EMAIL }}"
 git config user.name "Go Server on {{ ansible_hostname }}"
 
+cp /var/go/go_notify.conf $BACKUP_HOME/go_notify.conf
+
 for f in $BACKUP_HOME/*
 do
    if [ -d "$f" ]
    then
       echo Processing backup "$f"
       mv -f "$f"/* .
-      git add config-dir.zip config-repo.zip db.zip version.txt
+      git add config-dir.zip config-repo.zip db.zip version.txt go_notify.conf
       git commit -m "`basename \"$f\"`"
       rm -rf "$f"
    fi
