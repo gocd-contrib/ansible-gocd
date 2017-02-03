@@ -2,7 +2,8 @@
 
 - name: Download install GOCD Plugins
   get_url: url="{{ item }}" dest="{{ GOCD_SERVER_PLUGIN }}"
-  become_user: "{{ GOCD_USER }}"
+    owner: go
+    group: go
   with_items: "{{GOCD_PLUGINS_INSTALL}}"
   notify:
    - restart go-server
