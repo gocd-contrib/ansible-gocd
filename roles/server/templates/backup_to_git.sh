@@ -3,15 +3,18 @@ BACKUP_HOME='/var/lib/go-server/artifacts/serverBackups'
 BACKUP_TMP=`mktemp -d`
 WORKING_DIR=`pwd`/remote
 
+cd "$WORKING_DIR"
+
+cp /var/go/go_notify.conf go_notify.conf
+
+# Start backup
 curl 'https://{{ GOCD_SERVER_HOST }}:{{ GOCD_SERVER_SSL_PORT }}/go/api/backups' \
       --insecure \
       -u "$ADMIN_USER:$ADMIN_PASSWORD" \
       -H 'Confirm: true' \
       -H 'Accept: application/vnd.go.cd.v1+json' \
       -X POST
-
-cd "$WORKING_DIR"
-
+      
 # Initial Git configuration
 git config push.default simple
 git config user.email "{{ GOCD_ADMIN_EMAIL }}"
