@@ -1,5 +1,5 @@
 #!/bin/bash
-BACKUP_HOME='/var/lib/go-server/artifacts/serverBackups'
+BACKUP_HOME='/artifacts/serverBackups'
 BACKUP_TMP=`mktemp -d`
 WORKING_DIR=`pwd`/remote
 
