@@ -33,3 +33,17 @@ do
 done
 
 git push
+
+git clone --depth 1 git@github.com:Financial-Times/aws-composer-gocd-backup.git $BACKUP_HOME/verify
+cd $BACKUP_HOME/verify
+
+if [ $((( $(date +%s) - $(git log -1 --format=%at) ))) -gt 60 ];
+then
+    echo "ERROR! latest remote git commit timestamp is not recent (past minute)"
+    EXIT=1
+else
+    echo "Backup verified! latest remote git commit timestamp is recent (past minute)"
+    EXIT=0
+fi
+
+exit $EXIT
