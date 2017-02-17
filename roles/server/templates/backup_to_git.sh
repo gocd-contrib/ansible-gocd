@@ -14,7 +14,7 @@ curl 'https://{{ GOCD_SERVER_HOST }}:{{ GOCD_SERVER_SSL_PORT }}/go/api/backups' 
       -H 'Confirm: true' \
       -H 'Accept: application/vnd.go.cd.v1+json' \
       -X POST
-      
+
 # Initial Git configuration
 git config push.default simple
 git config user.email "{{ GOCD_ADMIN_EMAIL }}"
@@ -45,5 +45,7 @@ else
     echo "Backup verified! latest remote git commit timestamp is recent (past minute)"
     EXIT=0
 fi
+
+rm -rf $BACKUP_HOME/verify
 
 exit $EXIT
