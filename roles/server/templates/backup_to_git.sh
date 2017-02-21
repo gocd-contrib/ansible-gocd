@@ -24,11 +24,23 @@ for f in $BACKUP_HOME/*
 do
    if [ -d "$f" ]
    then
+
       echo Processing backup "$f"
+
       mv -f "$f"/* .
+
       git add config-dir.zip config-repo.zip db.zip version.txt go_notify.conf
+
+      aws s3 cp config-dir.zip s3://aws-composer-gocd-prod/backup/
+      aws s3 cp config-repo.zip s3://aws-composer-gocd-prod/backup/
+      aws s3 cp db.zip s3://aws-composer-gocd-prod/backup/
+      aws s3 cp version.txt s3://aws-composer-gocd-prod/backup/
+      aws s3 cp go_notify.conf s3://aws-composer-gocd-prod/backup/
+
       git commit -m "`basename \"$f\"`"
+
       rm -rf "$f"
+
    fi
 done
 
