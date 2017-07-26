@@ -1,5 +1,5 @@
 GOCD_GO_VERSION: latest
-GOCD_JAVA_HOME: /usr/lib/jvm/java
+GOCD_JAVA_HOME: /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 GOCD_AGENT_INSTANCES: "{{ ansible_processor_count * ansible_processor_cores }}"
 GOCD_SERVER_HOST: localhost
 GOCD_SERVER_PORT: 8153
