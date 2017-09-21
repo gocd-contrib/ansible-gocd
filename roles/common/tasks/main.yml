@@ -3,22 +3,22 @@
   fail: msg='This role only supports Yum or Apt package managers at the moment.  Please do a manual install instead.'
   when: ansible_pkg_mgr != 'yum' and ansible_pkg_mgr != 'apt'
 
-- name: yum install Java 1.7 and some basic dependencies
+- name: "yum install Java {{ GOCD_JAVA_PACKAGE_VERSION_YUM }} and some basic dependencies"
   become: yes
   yum: name={{ item }} state=present
   with_items:
    - unzip
    - which
-   - java-1.7.0-openjdk-devel
+   - "{{ GOCD_JAVA_PACKAGE_YUM }}"
   when: ansible_pkg_mgr == 'yum'
 
-- name: apt install Java 1.7 and some basic dependencies. Must be installed before repo.
+- name: "apt install Java {{ GOCD_JAVA_PACKAGE_VERSION_DEB }} and some basic dependencies. Must be installed before repo."
   become: yes
   apt: name={{ item }} state=present update_cache=true
   with_items:
    - python-pycurl
    - unzip
-   - openjdk-7-jdk
+   - "{{ GOCD_JAVA_PACKAGE_DEB }}"
   when: ansible_pkg_mgr == 'apt'
 
 - name: determine JAVA_HOME
