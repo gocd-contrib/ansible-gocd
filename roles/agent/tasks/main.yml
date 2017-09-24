@@ -85,7 +85,7 @@
   when: gocd_tmp_new_agent.changed
 
 - name: Ensure Go-agents are not running yet (waiting for server config), but are enabled on startup.
-  service: "name=go-agent{{ item }} state=stopped enabled=yes"
+  service: "name=go-agent{{ item }} state=stopped enabled=yes use=service"
   become: yes
   notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
