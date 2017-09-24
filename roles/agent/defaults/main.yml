@@ -32,3 +32,6 @@ GOCD_SSH_KNOWN_DOMAIN: github.com
 
 # Used internally. Do not change.
 GOCD_VALID_EMAIL_REGEX: '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'
+
+# For providing extra lines into /etc/defaults/go-agent
+GOCD_AGENT_DEFAULT_EXTRAS: ""
