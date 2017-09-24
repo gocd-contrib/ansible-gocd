@@ -18,3 +18,6 @@ then
    ssh-add /var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}}
 fi
 {% endif %}
+{% if GOCD_AGENT_DEFAULT_EXTRAS %}
+{{ GOCD_AGENT_DEFAULT_EXTRAS }}
+{% endif %}
