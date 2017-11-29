@@ -1,63 +1,80 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
 
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
 Vagrant.configure("2") do |config|
-  config.vm.hostname = 'go'
-  config.vm.box = 'opscode-fedora-20'
-  config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_fedora-20_chef-provisionerless.box'
-  # config.vm.box = 'opscode-fedora-19'
-  # config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_fedora-19_chef-provisionerless.box'
-  # config.vm.box = 'opscode-centos-6.5'
-  # config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box'
-  # config.vm.box = 'opscode-ubuntu-13.10'
-  # config.vm.box_url = 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box'
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
 
-  if Vagrant.has_plugin?("vagrant-cachier")
-  	config.cache.scope = :machine
-  	config.cache.auto_detect = true
-      # If you are using VirtualBox, you might want to use that to enable NFS for
-      # shared folders. This is also very useful for vagrant-libvirt if you want
-      # bi-directional sync
-      # config.cache.synced_folder_opts = {
-      #   type: :nfs,
-      #   # The nolock option can be useful for an NFSv3 client that wants to avoid the
-      #   # NLM sideband protocol. Without this option, apt-get might hang if it tries
-      #   # to lock files needed for /var/cache/* operations. All of this can be avoided
-      #   # by using NFSv4 everywhere. Please note that the tcp option is not the default.
-      #   mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
-      # }
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = "bento/ubuntu-16.04"
+  config.ssh.forward_agent = true
+  config.vm.boot_timeout = 120
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # NOTE: This will enable public access to the opened port
+  # config.vm.network "forwarded_port", guest: 8000, host: 8000
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  config.vm.network "forwarded_port", guest: 8154, host: 8154, host_ip: "127.0.0.1"
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  config.vm.synced_folder "./", "/vagrant"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  config.vm.provider "virtualbox" do |v|
+      v.memory = 2048
+      v.cpus = 1
   end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
 
-	# support docker
-#	config.vm.provider :docker do |docker, override|
-#		override.vm.box = 'dummy'
-#		override.vm.box_url = 'http://bit.ly/vagrant-docker-dummy'
-#		docker.image = "tlalexan/vagrant-centos:latest"
-#	end
-
-
-    config.vm.provision "ansible" do |ansible|
-        ansible.groups = {
-            "server" => ["default"],
-            "agents" => ["default"]
-        }
-        ansible.host_key_checking = false
-        ansible.playbook = "site.yml"
-        ansible.sudo = true
-        ansible.verbose = ''
-        # Use this if you want to override the Role defaults for example to force a specific number of agents.
-        ansible.extra_vars = {
-          GOCD_ADMIN_EMAIL: 'tpbrown@gmail.com'
-          # GOCD_AGENT_INSTANCES: 2
-      }
-	end
-
-	# machines are defined here...
-
-  config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", "2048"]
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  config.vm.provision "ansible" do |ansible|
+    ansible.groups = {
+        "server" => ["default"],
+        "agents" => ["default"]
+    }
+    ansible.extra_vars = {
+        GOCD_ADMIN_EMAIL: 'jcarlson@gmail.com',
+        GOCD_AGENT_INSTANCES: 1
+    }
+    ansible.become = true
+    ansible.verbose = "v"
+    ansible.extra_vars = {remote_user: "vagrant"}
+    ansible.playbook = "site.yml"
   end
-  #config.vm.network "private_network", ip: "192.168.50.2"
-  config.vm.network "forwarded_port", guest:8153, host: 8153
-  # don't need mounted folder
-  config.vm.synced_folder ".", "/vagrant", disabled: true
 
 end

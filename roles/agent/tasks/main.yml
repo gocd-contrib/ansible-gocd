@@ -31,14 +31,17 @@
 - name: Creating additional agents - directory structure.
   file: path="/var/lib/go-agent{{item}}" mode=0755 owner=go group=go state=directory
   become: yes
+  when:  GOCD_AGENT_INSTANCES|int > 1
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
 
 - file: path="/var/log/go-agent{{item}}" mode=0755 owner=go group=go state=directory
   become: yes
+  when:  GOCD_AGENT_INSTANCES|int > 1
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
 
 - file: path="/var/lib/go-agent{{item}}/config" mode=0755 owner=go group=go state=directory
   become: yes
+  when:  GOCD_AGENT_INSTANCES|int > 1
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
   register: gocd_tmp_new_agent
 
@@ -46,6 +49,7 @@
   template: "src=go-agent-defaults dest=/etc/default/go-agent{{ item }} mode=0644 group={{ GOCD_GROUP }} owner={{ GOCD_USER }}"
   become: yes
   notify: restart all agents
+  when:  GOCD_AGENT_INSTANCES|int > 1
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
   register: gocd_tmp_agentdefaults
 
@@ -53,6 +57,7 @@
   template: "src=go-agent-service dest=/etc/init.d/go-agent{{ item }} mode=0755 owner=root group=root"
   become: yes
   notify: restart all agents
+  when:  GOCD_AGENT_INSTANCES|int > 1
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
   register: gocd_tmp_agentservice
 
@@ -62,6 +67,7 @@
   notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
   register: gocd_tmp_agentscript
+  when:  GOCD_AGENT_INSTANCES|int > 1
 
 - name: Capture javac version
   shell: javac -version 2>&1|awk '{print $2}'
@@ -82,11 +88,11 @@
   become: yes
   notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
-  when: gocd_tmp_new_agent.changed
+  when: GOCD_AGENT_INSTANCES|int > 1 and gocd_tmp_new_agent.changed
 
 - name: Ensure Go-agents are not running yet (waiting for server config), but are enabled on startup.
   service: "name=go-agent{{ item }} state=stopped enabled=yes"
   become: yes
   notify: restart all agents
   with_sequence: "count={{ GOCD_AGENT_INSTANCES }}"
-  when: gocd_tmp_new_agent.changed or gocd_tmp_agentservice.changed or gocd_tmp_agentdefaults.changed or gocd_tmp_agentscript.changed
+  when: GOCD_AGENT_INSTANCES|int > 1 and (gocd_tmp_new_agent.changed or gocd_tmp_agentservice.changed or gocd_tmp_agentdefaults.changed or gocd_tmp_agentscript.changed)

@@ -1,0 +1,58 @@
+- name: Download the Go tarball
+  become: true
+  get_url:
+    url: "{{ go_download_location }}"
+    dest: /usr/local/src/{{ go_tarball }}
+    checksum: "{{ go_tarball_checksum }}"
+
+- name: Register the current Go version (if any)
+  become: true
+  command: /usr/local/go/bin/go version
+  ignore_errors: yes
+  register: go_version
+  changed_when: false
+
+- name: Remove old installation of Go
+  become: true
+  file:
+    path: /usr/local/go
+    state: absent
+  when: go_version|failed or go_version.stdout != go_version_target
+
+- name: Extract the Go tarball if Go is not yet installed or not the desired version
+  become: true
+  unarchive:
+    src: "/usr/local/src/{{ go_tarball }}"
+    dest: /usr/local
+    copy: no
+  when: go_version|failed or go_version.stdout != go_version_target
+
+
+- name: Add the Go bin directory to the PATH environment variable for all users
+  become: true
+  copy:
+    src: go-bin.sh
+    dest: /etc/profile.d
+
+- name: Set GOPATH for all users
+  become: true
+  copy:
+    src: go-path.sh
+    dest: /etc/profile.d
+  when: set_go_path
+
+- name: Install DEP
+  become: true
+  get_url: 
+    url: https://github.com/golang/dep/releases/download/v0.3.2/dep-linux-amd64
+    checksum: "sha256:322152b8b50b26e5e3a7f6ebaeb75d9c11a747e64bbfd0d8bb1f4d89a031c2b5"
+    dest: /usr/local/bin/dep
+
+- name: Make DEP into a valid executable
+  become: true
+  file:
+    path: /usr/local/bin/dep
+    mode: 755
+
+  
+  

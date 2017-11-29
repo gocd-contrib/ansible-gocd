@@ -33,6 +33,7 @@ GOCD_PLUGINS_INSTALL:
 
 # List of URL/filenames plugins to uninstall
 GOCD_PLUGINS_UNINSTALL:
+GOCD_ADMIN_EMAIL: 'justinc4@gmail.com'
 
 # GOCD default external dir
 GOCD_SERVER_PLUGIN: /var/lib/go-server/plugins/external
