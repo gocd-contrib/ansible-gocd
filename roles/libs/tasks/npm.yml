@@ -1,0 +1,28 @@
+---
+- name: Install a node location that is not ancient
+  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
+  become: true
+
+- name: Setup the yarn repo
+  shell: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -; echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  become: true
+
+- name: Install a node location that is not ancient and get yarn and ruby sass installed
+  apt: pkg={{item}} state=installed update_cache=true
+  become: true
+  with_items:
+  - nodejs
+  - yarn
+  - ruby-sass
+
+#Has to be command or the ansible task somehow ignores this..
+- name: Ensure we have the most recent npm
+  command: /usr/bin/npm install -g npm 
+  become: true
+
+- name: NPM compiler install
+  npm: name={{item}} global=yes
+  become: true
+  with_items:
+    - sass
+    - gulp

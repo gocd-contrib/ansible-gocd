@@ -1,6 +1,10 @@
 ---
 - hosts: all
   roles:
+    - libs
+
+- hosts: all
+  roles:
     - common
 
 - hosts: server

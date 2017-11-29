@@ -1,0 +1,4 @@
+# Need to actually get some basic build library support so the tasks on the server can be simple
+---
+    - import_tasks: go.yml
+    - import_tasks: npm.yml

@@ -13,13 +13,14 @@ GOCD_ROLES:
   - agent
 # Agent auto-registration; this is insecure and you should override this value for real usage
 GOCD_AUTO_REGISTER_KEY: insecure_registration_key
+GOCD_ADMIN_EMAIL: "justinc4@gmail.com"
 
 # Use to insert additonal environment variables.
 GOCD_AGENT_ADDITIONAL_DEFAULTS:
 GOCD_SERVER_ADDITIONAL_DEFAULTS:
 
 # Basic SCM dependencies
-GOCD_SCM_GIT: false
+GOCD_SCM_GIT: true
 GOCD_SCM_MERCURIAL: false
 GOCD_SCM_SVN: false
 
@@ -27,7 +28,7 @@ GOCD_SCM_SVN: false
 GOCD_CONFIGURE: false
 GOCD_CONFIGURE_SMTP: false
 GOCD_CONFIGURE_SECURITY: false
-GOCD_CONFIGURE_SSH: false
+GOCD_CONFIGURE_SSH: true
 GOCD_SSH_KNOWN_DOMAIN: github.com
 
 # Used internally. Do not change.

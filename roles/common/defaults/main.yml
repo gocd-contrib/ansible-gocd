@@ -28,7 +28,7 @@ GOCD_SSH_KNOWN_DOMAIN: github.com
 GOCD_VALID_EMAIL_REGEX: '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'
 
 # Java version and package management
-GOCD_JAVA_VERSION: 7
+GOCD_JAVA_VERSION: 8
 GOCD_JAVA_PACKAGE_VERSION_YUM: 1.{{ GOCD_JAVA_VERSION }}.0
 GOCD_JAVA_PACKAGE_YUM: java-{{ GOCD_JAVA_PACKAGE_VERSION_YUM }}-openjdk-devel
 
