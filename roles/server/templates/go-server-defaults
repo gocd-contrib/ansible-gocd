@@ -1,8 +1,8 @@
 # {{ ansible_managed }}
 {{GOCD_SERVER_ADDITIONAL_DEFAULTS | default("") }}
-
 export GO_SERVER_PORT={{ GOCD_SERVER_PORT }}
 export GO_SERVER_SSL_PORT={{ GOCD_SERVER_SSL_PORT | default(8154) }}
+export GO_SERVER_SYSTEM_PROPERTIES="-Dgo.security.reauthentication.enabled=false"
 export JAVA_HOME={{ GOCD_JAVA_HOME }}
 export SERVER_WORK_DIR=/var/lib/go-server
 DAEMON=Y
