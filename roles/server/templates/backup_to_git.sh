@@ -1,22 +1,19 @@
 #!/bin/bash
-BACKUP_HOME='/var/lib/go-server/artifacts/serverBackups'
+BACKUP_HOME='/artifacts/serverBackups'
 BACKUP_TMP=`mktemp -d`
 WORKING_DIR=`pwd`/remote
 
-if [ -z "$ADMIN_USER" -o -z "$ADMIN_PASSWORD" ]
-then
-   echo Admin user or password not specified. No authentication will be attempted.
-   echo To specify credentials set environment variables ADMIN_USER and ADMIN_PASSWORD - use a secure variable for the latter.
-   CREDENTIALS=""
-else
-   CREDENTIALS="--anyauth --user $ADMIN_USER:$ADMIN_PASSWORD"
-fi
-
-echo curl $CREDENTIALS --no-progress-bar -d 'null' http://{{ GOCD_SERVER_HOST }}:{{ GOCD_SERVER_PORT }}/go/api/admin/start_backup
-
-curl $CREDENTIALS --no-progress-bar -d 'null' http://{{ GOCD_SERVER_HOST }}:{{ GOCD_SERVER_PORT }}/go/api/admin/start_backup
-
 cd "$WORKING_DIR"
+
+cp /var/go/go_notify.conf go_notify.conf
+
+# Start backup
+curl 'https://{{ GOCD_SERVER_HOST }}:{{ GOCD_SERVER_SSL_PORT }}/go/api/backups' \
+      --insecure \
+      -u "$ADMIN_USER:$ADMIN_PASSWORD" \
+      -H 'Confirm: true' \
+      -H 'Accept: application/vnd.go.cd.v1+json' \
+      -X POST
 
 # Initial Git configuration
 git config push.default simple
@@ -25,15 +22,43 @@ git config user.name "Go Server on {{ ansible_hostname }}"
 
 for f in $BACKUP_HOME/*
 do
-   if [ -d "$f" ]
-   then
-      echo Processing backup "$f"
-      mv -f "$f"/* .
-      git add config-dir.zip config-repo.zip db.zip version.txt
-      git commit -m "`basename \"$f\"`" 
+    if [ -d "$f" ]
+    then
+
+        echo Processing backup "$f"
+
+        mv -f "$f"/* .
+
+        aws s3 cp config-dir.zip s3://aws-composer-gocd-prod/backup/
+        aws s3 cp config-repo.zip s3://aws-composer-gocd-prod/backup/
+        aws s3 cp db.zip s3://aws-composer-gocd-prod/backup/
+        aws s3 cp version.txt s3://aws-composer-gocd-prod/backup/
+        aws s3 cp go_notify.conf s3://aws-composer-gocd-prod/backup/
+
+        git pull
+        git add config-dir.zip config-repo.zip db.zip version.txt go_notify.conf
+        git commit -m "`basename \"$f\"`"
+
       rm -rf "$f"
-   fi
+
+    fi
 done
+
 
 git push
 
+git clone --depth 1 git@github.com:Financial-Times/aws-composer-gocd-backup.git $BACKUP_HOME/verify
+cd $BACKUP_HOME/verify
+
+if [ $((( $(date +%s) - $(git log -1 --format=%at) ))) -gt 60 ];
+then
+    echo "ERROR! latest remote git commit timestamp is not recent (past minute)"
+    EXIT=1
+else
+    echo "Backup verified! latest remote git commit timestamp is recent (past minute)"
+    EXIT=0
+fi
+
+rm -rf $BACKUP_HOME/verify
+
+exit $EXIT
